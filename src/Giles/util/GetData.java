@@ -1,0 +1,51 @@
+package Giles.util;
+
+import javax.swing.*;
+
+/**
+ * Created by Taylor on 7/14/2017.
+ */
+public class GetData {
+
+    public static String getString(String message, String title){
+        String output = JOptionPane.showInputDialog(null, message, title, JOptionPane.PLAIN_MESSAGE);
+        return output;
+    }
+
+    public static int getInt(String message, String title){
+        String outputStr = JOptionPane.showInputDialog(null, message, title, JOptionPane.PLAIN_MESSAGE);
+        if(!DataProcessor.isInteger(outputStr)) {
+            while (!DataProcessor.isInteger(outputStr)) {
+                if (DataProcessor.isInteger(outputStr)) {
+                    return DataProcessor.convertToInteger(outputStr);
+                } else {
+                    outputStr = JOptionPane.showInputDialog(null, "ERROR. Input must be an integer value.\n\n" + message, title, JOptionPane.PLAIN_MESSAGE);
+                }
+            }
+        } else {
+            return DataProcessor.convertToInteger(outputStr);
+        }
+        return -99999;
+    }
+
+    public static double getDouble(String message, String title){
+        String outputStr = JOptionPane.showInputDialog(null, message, title, JOptionPane.PLAIN_MESSAGE);
+        if(!DataProcessor.isDouble(outputStr)) {
+            while (!DataProcessor.isDouble(outputStr)) {
+                if (DataProcessor.isDouble(outputStr)) {
+                    return DataProcessor.convertToDouble(outputStr);
+                } else {
+                    outputStr = JOptionPane.showInputDialog(null, "ERROR. Input must be a double value.\n\n" + message, title, JOptionPane.PLAIN_MESSAGE);
+                }
+            }
+        } else {
+            return DataProcessor.convertToDouble(outputStr);
+        }
+        return -99999.0;
+    }
+
+    public static boolean getBoolean(String message, String title){
+        int choice = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
+        return choice == 0;
+}
+}
