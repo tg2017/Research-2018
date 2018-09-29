@@ -9,13 +9,11 @@ import java.util.List;
 public class NeuralNetwork {
 
     private List<List<Neuron>> network;
-    private List<Neuron> hiddenLayer;
-    private List<Neuron> outputLayer;
 
 
     public NeuralNetwork(int numInputs, int numHiddens, int numOutputs){
         network = new ArrayList<>();
-        hiddenLayer = new ArrayList<>(); //Stores all the neurons in the hidden layer
+        List<Neuron> hiddenLayer = new ArrayList<>();
         Neuron currentNeuron;
         for(int i = 0; i < numHiddens; i++) { //Cycles through each neuron of hidden layer
             currentNeuron = new Neuron();
@@ -26,7 +24,7 @@ public class NeuralNetwork {
             hiddenLayer.add(currentNeuron);
         }
 
-        outputLayer = new ArrayList<>();
+        List<Neuron> outputLayer = new ArrayList<>();
         for(int i = 0; i < numOutputs; i++) { //Cycles through each neuron of output layer
             currentNeuron = new Neuron();
             for (int j = 0; j < numHiddens; j++) { //Cycles through each neuron of hidden layer
@@ -42,11 +40,13 @@ public class NeuralNetwork {
 
     public void print(){
         System.out.println("Note: Each set of brackets is a layer, each set of stars is a neuron");
-        System.out.println(network.toString());
+        for (List<Neuron> layer : network) {
+            System.out.println(layer);
+        }
     }
 
     //Finds the raw value of the neuron's activation
-    public double getNeuronValue(Neuron neuron, List<Double> inputs){
+    private double getNeuronValue(Neuron neuron, List<Double> inputs){
         double value = 0;
 
         for(int i=0; i < neuron.size(); i++){
@@ -57,7 +57,7 @@ public class NeuralNetwork {
     }
 
     //Applies sigmoid function to neuron value
-    public double getNeuronActivation(Neuron neuron, List<Double> inputs){
+    private double getNeuronActivation(Neuron neuron, List<Double> inputs){
         return NewProcessor.sigmoid(getNeuronValue(neuron, inputs));
     }
 
@@ -84,14 +84,14 @@ public class NeuralNetwork {
         return outputs;
     }
 
-    public void backProp(List<Double> expectedOutcomes){
+    private void backProp(List<Double> expectedOutcomes){
         List<Neuron> currentLayer;
         Neuron currentNeuron;
         List<Double> errors;
-        for(int i = network.size() - 1; i > 0; i++){ //If in any layer before the output layer...
+        for(int i = network.size() - 1; i >= 0; i--){  //Cycle through all layers
             currentLayer = new ArrayList<>(network.get(i));
-            errors = new ArrayList<>();
-            if(i != network.size()-1){
+            errors = new ArrayList<>(); //Reset errors list for use in next layer
+            if(i != network.size()-1){ //If in any layer before the output layer...
                 for(int j = 0; j < currentLayer.size(); j++){ //Cycle through neurons in layer
                     double currentError = 0;
                     for(int k = 0; k < network.get(i+1).size(); k++){ //Cycle through neurons in next layer
@@ -113,13 +113,82 @@ public class NeuralNetwork {
         }
     }
 
-    /*private void learn(){ //Updates the values of weights and biases to reflect changes demanded by training example
-        List<Double> inputs = new ArrayList<>();
+    //Updates the weights and biases of the neurons in the network based on input data
+    private void learn(double rate, List<Double> theInputs){ //Updates the values of weights and biases to reflect changes demanded by training example
+        List<Double> inputs;
+        List<Neuron> currentLayer;
         for(int i = 0; i < network.size(); i++){ //Cycle through layers
-            inputs = new ArrayList<>()
-
+            currentLayer = network.get(i);
+            inputs = new ArrayList<>(theInputs);
+            if(i != 0){ //If not in first hidden layer...
+                inputs = new ArrayList<>();
+                for(int j = 0; j < currentLayer.size(); j++){
+                    inputs.add(j, currentLayer.get(j).getActivation()); //...set the inputs to the activations of the neurons in the prev. layer
+                }
+            }
+            for (Neuron currentNeuron : currentLayer) { //Cycle through neurons in layer
+                for (int k = 0; k < inputs.size(); k++) { //Cycle through weights of currentNeuron (should be same size as inputs)
+                    currentNeuron.setWeight(k,
+                            currentNeuron.getWeight(k) +
+                                    inputs.get(k) *
+                                            currentNeuron.getError() * rate); //Update weight value (weight = weight + input * error * learning rate)
+                }
+                currentNeuron.setBias(currentNeuron.getBias() + currentNeuron.getError() * rate); //Update bias
+            }
         }
+    }
 
-    }*/
+    public void train(List<List<Double>> examples, List<List<Double>> expectedOutcomes, double learningRate, int numberOfIterations){
+        double totalError;
+        int numberCorrect;
+        List<Double> currentOutputs;
+        List<Double> currentExpecteds;
+        for(int iteration = 0; iteration < numberOfIterations; iteration++){ //Repeat for each iteration
+            totalError = 0;
+            numberCorrect = 0;
+            for(List<Double> currentExample : examples){ //Cycle through training examples
+                currentOutputs = new ArrayList<>(forwardProp(currentExample)); //Get outputs based on inputs of current example
+                currentExpecteds = new ArrayList<>(expectedOutcomes.get(examples.indexOf(currentExample)));
 
+                //printExampleSummary(currentExample, currentExpecteds);
+
+                if(currentExpecteds.get(getPrediction(currentExample)) == 1){
+                    numberCorrect++;
+                }
+                //System.out.println(currentExpecteds);
+
+                //Calculate error (to see if improving over time)
+                for(int i = 0; i < currentExpecteds.size(); i++){
+                    totalError += (Math.pow((currentExpecteds.get(i) - currentOutputs.get(i)), 2));
+                    //System.out.println(Math.pow((currentExpecteds.get(i) - currentOutputs.get(i)), 2));
+                }
+                backProp(currentExpecteds);
+                learn(learningRate, currentExample);
+            }
+            System.out.println("Iteration: " + (iteration+1) + "\t\tTotal Error: " + totalError + "\t\tNumber Correct: " + numberCorrect);
+        }
+    }
+
+    //Returns the index of the output neuron with the highest activation after the specified example was forward propagated
+    public int getPrediction(List<Double> inputs){
+        forwardProp(inputs);
+        List<Neuron> outputLayer = network.get(network.size()-1);
+        int indexOfMax = -1;
+        double currentMax = -9999999;
+        for(int i = 0; i < outputLayer.size(); i++){
+            if(outputLayer.get(i).getActivation() > currentMax){
+                currentMax = outputLayer.get(i).getActivation();
+                indexOfMax = i;
+            }
+        }
+        return indexOfMax;
+
+    }
+
+    public void printExampleSummary(List<Double> example, List<Double> expecteds){
+        System.out.println("\n\tOutputs: " + forwardProp(example) + " | " + getPrediction(example));
+        System.out.println("\tExpected: " + expecteds);
+        System.out.println("\tCorrect: " + (expecteds.get(getPrediction(example)) == 1));
+
+    }
 }

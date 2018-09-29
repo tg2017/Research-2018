@@ -11,8 +11,6 @@ public class Neuron {
         this.weights = new ArrayList<>();
     }
 
-    ;
-
     public Neuron(List<Double> weights, double bias) {
         this.weights = new ArrayList<>(weights);
         this.bias = bias;
@@ -20,6 +18,10 @@ public class Neuron {
 
     public void addWeight(double weight) {
         weights.add(weight);
+    }
+
+    public void setWeight(int index, double weight) {
+        weights.set(index, weight);
     }
 
     public void setBias(double bias) {
