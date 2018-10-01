@@ -122,10 +122,11 @@ public class NeuralNetwork {
             inputs = new ArrayList<>(theInputs);
             if(i != 0){ //If not in first hidden layer...
                 inputs = new ArrayList<>();
-                for(int j = 0; j < currentLayer.size(); j++){
-                    inputs.add(j, currentLayer.get(j).getActivation()); //...set the inputs to the activations of the neurons in the prev. layer
+                for(int j = 0; j < network.get(i - 1).size(); j++){
+                    inputs.add(j, network.get(i-1).get(j).getActivation()); //...set the inputs to the activations of the neurons in the prev. layer
                 }
             }
+            //System.out.println(inputs);
             for (Neuron currentNeuron : currentLayer) { //Cycle through neurons in layer
                 for (int k = 0; k < inputs.size(); k++) { //Cycle through weights of currentNeuron (should be same size as inputs)
                     currentNeuron.setWeight(k,
@@ -138,9 +139,11 @@ public class NeuralNetwork {
         }
     }
 
+    //Trains the ANN using the given set of examples
     public void train(List<List<Double>> examples, List<List<Double>> expectedOutcomes, double learningRate, int numberOfIterations){
         double totalError;
         int numberCorrect;
+
         List<Double> currentOutputs;
         List<Double> currentExpecteds;
         for(int iteration = 0; iteration < numberOfIterations; iteration++){ //Repeat for each iteration

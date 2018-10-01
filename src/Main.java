@@ -9,8 +9,8 @@ public class Main {
     private static List<List<Double>> examples = new ArrayList<>();
     private static List<List<Double>> expecteds = new ArrayList<>();
 
-    private static CSVReader inReader = new CSVReader("C:\\Users\\super\\IdeaProjects\\NeuralNetwork4\\src\\inputs.txt");
-    private static CSVReader outReader = new CSVReader("C:\\Users\\super\\IdeaProjects\\NeuralNetwork4\\src\\expecteds.txt");
+    private static CSVReader inReader = new CSVReader("C:\\Users\\super\\IdeaProjects\\NeuralNetwork4\\src\\frequencies.txt");
+    private static CSVReader outReader = new CSVReader("C:\\Users\\super\\IdeaProjects\\NeuralNetwork4\\src\\outputs.txt");
 
     public static void main(String[] args) {
         readAndStore(inReader, examples);
@@ -19,7 +19,7 @@ public class Main {
         System.out.println("Examples: " + examples);
         System.out.println("Expected Outcomes: " + expecteds);
 
-        NeuralNetwork network = new NeuralNetwork(examples.get(0).size(), 20, expecteds.get(0).size());
+        NeuralNetwork network = new NeuralNetwork(examples.get(0).size(), 25, expecteds.get(0).size());
         System.out.println();
         network.print();
 
@@ -27,7 +27,7 @@ public class Main {
             System.out.println("Outputs: " + network.forwardProp(example));
         }*/
 
-        network.train(examples, expecteds, .2, 5000);
+        network.train(examples, expecteds, .2, 100000);
 
 
 
