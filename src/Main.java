@@ -19,7 +19,7 @@ public class Main {
         System.out.println("Examples: " + examples);
         System.out.println("Expected Outcomes: " + expecteds);
 
-        NeuralNetwork network = new NeuralNetwork(examples.get(0).size(), 25, expecteds.get(0).size());
+        NeuralNetwork network = new NeuralNetwork(examples.get(0).size(), 20, expecteds.get(0).size());
         System.out.println();
         network.print();
 
@@ -27,7 +27,7 @@ public class Main {
             System.out.println("Outputs: " + network.forwardProp(example));
         }*/
 
-        network.train(examples, expecteds, .2, 100000);
+        network.train(examples, expecteds, .3, 50000, "C:\\Users\\super\\IdeaProjects\\NeuralNetwork4\\src\\CSVTest.csv");
 
 
 

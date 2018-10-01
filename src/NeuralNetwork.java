@@ -1,3 +1,4 @@
+import Giles.util.CSVWriter;
 import Giles.util.NewProcessor;
 
 import java.util.ArrayList;
@@ -140,9 +141,13 @@ public class NeuralNetwork {
     }
 
     //Trains the ANN using the given set of examples
-    public void train(List<List<Double>> examples, List<List<Double>> expectedOutcomes, double learningRate, int numberOfIterations){
+    public void train(List<List<Double>> examples, List<List<Double>> expectedOutcomes, double learningRate, int numberOfIterations, String csvFilename){
         double totalError;
         int numberCorrect;
+
+        //For writing data to CSV File
+        CSVWriter csvWriter = new CSVWriter(csvFilename);
+        List<String> currentSet;
 
         List<Double> currentOutputs;
         List<Double> currentExpecteds;
@@ -169,7 +174,23 @@ public class NeuralNetwork {
                 learn(learningRate, currentExample);
             }
             System.out.println("Iteration: " + (iteration+1) + "\t\tTotal Error: " + totalError + "\t\tNumber Correct: " + numberCorrect);
+
+            //For printing data to CSV
+            if(iteration == 0){
+                currentSet = new ArrayList<>();
+                currentSet.add("Iteration");
+                currentSet.add("Total Error");
+                currentSet.add("Number Correct");
+                csvWriter.addSet(currentSet);
+            }
+            currentSet = new ArrayList<>();
+            currentSet.add(((Integer)(iteration + 1)).toString());
+            currentSet.add(((Double)(totalError)).toString());
+            currentSet.add(((Integer)(numberCorrect)).toString());
+            csvWriter.addSet(currentSet);
         }
+
+        csvWriter.write();
     }
 
     //Returns the index of the output neuron with the highest activation after the specified example was forward propagated
