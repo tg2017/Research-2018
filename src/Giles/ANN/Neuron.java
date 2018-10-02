@@ -1,3 +1,5 @@
+package Giles.ANN;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +24,10 @@ public class Neuron {
 
     public void setWeight(int index, double weight) {
         weights.set(index, weight);
+    }
+
+    public void setWeights(List<Double> newWeights){
+        weights = new ArrayList<>(newWeights);
     }
 
     public void setBias(double bias) {

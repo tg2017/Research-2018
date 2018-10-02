@@ -1,3 +1,5 @@
+package Giles.ANN;
+
 import Giles.util.CSVWriter;
 import Giles.util.NewProcessor;
 
@@ -9,8 +11,7 @@ import java.util.List;
 // and one output layer, each with a user-defined number of neurons.
 public class NeuralNetwork {
 
-    private List<List<Neuron>> network;
-
+    List<List<Neuron>> network;
 
     public NeuralNetwork(int numInputs, int numHiddens, int numOutputs){
         network = new ArrayList<>();
@@ -85,7 +86,7 @@ public class NeuralNetwork {
         return outputs;
     }
 
-    private void backProp(List<Double> expectedOutcomes){
+    void backProp(List<Double> expectedOutcomes){
         List<Neuron> currentLayer;
         Neuron currentNeuron;
         List<Double> errors;
@@ -115,7 +116,7 @@ public class NeuralNetwork {
     }
 
     //Updates the weights and biases of the neurons in the network based on input data
-    private void learn(double rate, List<Double> theInputs){ //Updates the values of weights and biases to reflect changes demanded by training example
+    void learn(double rate, List<Double> theInputs){ //Updates the values of weights and biases to reflect changes demanded by training example
         List<Double> inputs;
         List<Neuron> currentLayer;
         for(int i = 0; i < network.size(); i++){ //Cycle through layers
@@ -141,56 +142,36 @@ public class NeuralNetwork {
     }
 
     //Trains the ANN using the given set of examples
-    public void train(List<List<Double>> examples, List<List<Double>> expectedOutcomes, double learningRate, int numberOfIterations, String csvFilename){
+    public void train(List<List<Double>> examples, List<List<Double>> expectedOutcomes, double learningRate, int numberOfIterations){
         double totalError;
         int numberCorrect;
 
-        //For writing data to CSV File
-        CSVWriter csvWriter = new CSVWriter(csvFilename);
-        List<String> currentSet;
-
         List<Double> currentOutputs;
         List<Double> currentExpecteds;
-        for(int iteration = 0; iteration < numberOfIterations; iteration++){ //Repeat for each iteration
+        for(int iteration = 0; iteration < numberOfIterations; iteration++) { //Repeat for each iteration
             totalError = 0;
             numberCorrect = 0;
-            for(List<Double> currentExample : examples){ //Cycle through training examples
+            for (List<Double> currentExample : examples) { //Cycle through training examples
                 currentOutputs = new ArrayList<>(forwardProp(currentExample)); //Get outputs based on inputs of current example
                 currentExpecteds = new ArrayList<>(expectedOutcomes.get(examples.indexOf(currentExample)));
 
                 //printExampleSummary(currentExample, currentExpecteds);
 
-                if(currentExpecteds.get(getPrediction(currentExample)) == 1){
+                if (currentExpecteds.get(getPrediction(currentExample)) == 1) {
                     numberCorrect++;
                 }
                 //System.out.println(currentExpecteds);
 
                 //Calculate error (to see if improving over time)
-                for(int i = 0; i < currentExpecteds.size(); i++){
+                for (int i = 0; i < currentExpecteds.size(); i++) {
                     totalError += (Math.pow((currentExpecteds.get(i) - currentOutputs.get(i)), 2));
                     //System.out.println(Math.pow((currentExpecteds.get(i) - currentOutputs.get(i)), 2));
                 }
                 backProp(currentExpecteds);
                 learn(learningRate, currentExample);
             }
-            System.out.println("Iteration: " + (iteration+1) + "\t\tTotal Error: " + totalError + "\t\tNumber Correct: " + numberCorrect);
-
-            //For printing data to CSV
-            if(iteration == 0){
-                currentSet = new ArrayList<>();
-                currentSet.add("Iteration");
-                currentSet.add("Total Error");
-                currentSet.add("Number Correct");
-                csvWriter.addSet(currentSet);
-            }
-            currentSet = new ArrayList<>();
-            currentSet.add(((Integer)(iteration + 1)).toString());
-            currentSet.add(((Double)(totalError)).toString());
-            currentSet.add(((Integer)(numberCorrect)).toString());
-            csvWriter.addSet(currentSet);
+            System.out.println("Iteration: " + (iteration + 1) + "\t\tTotal Error: " + totalError + "\t\tNumber Correct: " + numberCorrect);
         }
-
-        csvWriter.write();
     }
 
     //Returns the index of the output neuron with the highest activation after the specified example was forward propagated
@@ -215,4 +196,5 @@ public class NeuralNetwork {
         System.out.println("\tCorrect: " + (expecteds.get(getPrediction(example)) == 1));
 
     }
+
 }
