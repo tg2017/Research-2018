@@ -45,7 +45,7 @@ public class DataProcessor {
         }
     }
 
-    //Returns the given object as a Double object, if possible - if not, returns error value "-99999.0"
+    //Returns the given object as a Double object, if possible - if not, returns error value -99999.0
     public static Double convertToDouble(Object element) {
         if (DataProcessor.isDouble((String)(element))) {
             return Double.parseDouble((String)(element));
@@ -54,7 +54,7 @@ public class DataProcessor {
         }
     }
 
-    //Returns the given object as an int, if possible - if not, returns error value "-99999"
+    //Returns the given object as an int, if possible - if not, returns error value -99999
     public static Integer convertToInteger(Object element) {
         if (DataProcessor.isInteger((String)(element))) {
             return Integer.parseInt((String)(element));

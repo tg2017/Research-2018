@@ -32,7 +32,8 @@ public class FancyNeuralNetwork extends NeuralNetwork {
         loadWB(weightsBiasesFilename);
     }
 
-    public void train(List<List<Double>> examples, List<List<Double>> expectedOutcomes, double learningRate, int numberOfIterations){
+    //Trains the network by running backprop using the given examples, <numberOfIterations> number of times
+    public void train(List<List<Double>> examples, List<List<Double>> expectedOutcomes, double learningRate, boolean dynamicRate, int numberOfIterations, boolean printMonitor){
         double totalError;
         int numberCorrect;
 
@@ -63,7 +64,8 @@ public class FancyNeuralNetwork extends NeuralNetwork {
                 backProp(currentExpecteds);
                 learn(learningRate, currentExample);
             }
-            System.out.println("Iteration: " + (iteration+1) + "\t\tTotal Error: " + totalError + "\t\tNumber Correct: " + numberCorrect);
+            if(printMonitor)
+                System.out.println("Iteration: " + (iteration+1) + "\t\tTotal Error: " + totalError + "\t\tNumber Correct: " + numberCorrect);
 
             //For printing data to CSV
             if(csvReady) {
@@ -84,6 +86,10 @@ public class FancyNeuralNetwork extends NeuralNetwork {
         }
         if(csvReady)
             csvWriter.write();
+    }
+
+    public void train(List<List<Double>> examples, List<List<Double>> expectedOutcomes, double learningRate, int numberOfIterations){
+        train(examples, expectedOutcomes, learningRate, false, numberOfIterations, true);
     }
 
     public void setCSVFile(String csvFilename){
@@ -170,6 +176,12 @@ public class FancyNeuralNetwork extends NeuralNetwork {
         network.add(hiddenLayer);
         network.add(outputLayer);
     }
+
+    //Returns prediction as a name, based on the names supplied in outputNames
+    public String getPrediction(List<Double> inputs, String[] outputNames){
+        return outputNames[super.getPrediction(inputs)];
+    }
+
 
 
 
