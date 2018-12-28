@@ -63,11 +63,11 @@ public class NeuralNetwork {
         return NewProcessor.sigmoid(getNeuronValue(neuron, inputs));
     }
 
-    //Returns activations of output layer after "inputs" data was entered into the input layer and forward propagated
+    //Returns activations of output layer after "inputLayerSize" data was entered into the input layer and forward propagated
     public List<Double> forwardProp(List<Double> theInputs) {
         List<Double> inputs = new ArrayList<>(theInputs);
         List<Double> outputs = new ArrayList<>();
-        List<Double> newInputs; //Used as a temp to store activations of layer until the next layer is ready to use them as inputs
+        List<Double> newInputs; //Used as a temp to store activations of layer until the next layer is ready to use them as inputLayerSize
         Neuron currentNeuron;
         for (int i = 0; i < network.size(); i++) {
             newInputs = new ArrayList<>(); //Reset newInputs
@@ -76,7 +76,7 @@ public class NeuralNetwork {
                 currentNeuron.setActivation(getNeuronActivation(currentNeuron, inputs)); //Sets the activation variable of the neuron
                 newInputs.add(currentNeuron.getActivation());
             }
-            inputs = new ArrayList<>(newInputs); //Change the inputs to be passed into the next layer into the activations of the previous layer
+            inputs = new ArrayList<>(newInputs); //Change the inputLayerSize to be passed into the next layer into the activations of the previous layer
         }
 
         for (int i = 0; i < network.get(network.size() - 1).size(); i++) { //Cycle through output layer
@@ -125,12 +125,12 @@ public class NeuralNetwork {
             if (i != 0) { //If not in first hidden layer...
                 inputs = new ArrayList<>();
                 for (int j = 0; j < network.get(i - 1).size(); j++) {
-                    inputs.add(j, network.get(i - 1).get(j).getActivation()); //...set the inputs to the activations of the neurons in the prev. layer
+                    inputs.add(j, network.get(i - 1).get(j).getActivation()); //...set the inputLayerSize to the activations of the neurons in the prev. layer
                 }
             }
-            //System.out.println(inputs);
+            //System.out.println(inputLayerSize);
             for (Neuron currentNeuron : currentLayer) { //Cycle through neurons in layer
-                for (int k = 0; k < inputs.size(); k++) { //Cycle through weights of currentNeuron (should be same size as inputs)
+                for (int k = 0; k < inputs.size(); k++) { //Cycle through weights of currentNeuron (should be same size as inputLayerSize)
                     currentNeuron.setWeight(k,
                             currentNeuron.getWeight(k) +
                                     inputs.get(k) *
@@ -152,7 +152,7 @@ public class NeuralNetwork {
             totalError = 0;
             numberCorrect = 0;
             for (List<Double> currentExample : examples) { //Cycle through training examples
-                currentOutputs = new ArrayList<>(forwardProp(currentExample)); //Get outputs based on inputs of current example
+                currentOutputs = new ArrayList<>(forwardProp(currentExample)); //Get outputLayerSize based on inputLayerSize of current example
                 currentExpecteds = new ArrayList<>(expectedOutcomes.get(examples.indexOf(currentExample)));
 
                 //printExampleSummary(currentExample, currentExpecteds);

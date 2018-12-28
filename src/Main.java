@@ -35,9 +35,9 @@ public class Main {
         }
 
 
-        //This chunk gives the outputs alphabetical names, beginning with A
+        //This chunk gives the outputLayerSize alphabetical names, beginning with A
         int alphabetCounter = -1;
-        //Names all outputs in full sets of 26
+        //Names all outputLayerSize in full sets of 26
         for(int i = 0; i < examples.size() / alphabet.length; i++){
             if(alphabetCounter == -1){
                 Collections.addAll(outputNames, alphabet);
@@ -49,7 +49,7 @@ public class Main {
             alphabetCounter++;
         }
 
-        //Names remaining outputs
+        //Names remaining outputLayerSize
         for(int k = 0; k < (examples.size() % alphabet.length); k++){
             if(alphabetCounter == -1){
                 outputNames.add(alphabet[k]);
@@ -82,7 +82,7 @@ public class Main {
                 expecteds.add(new ArrayList<>(tempList));
             }
         } else {
-            JOptionPane.showMessageDialog(null, "The format of the expected output values provided is not valid.\nPlease provide expected outputs as names or as doubles.");
+            JOptionPane.showMessageDialog(null, "The format of the expected output values provided is not valid.\nPlease provide expected outputLayerSize as names or as doubles.");
         }
 
         System.out.println("Examples: " + examples);
@@ -99,7 +99,8 @@ public class Main {
 
 
         network.setCSVFile("C:\\Users\\super\\IdeaProjects\\NeuralNetwork4\\src\\CSVTest.csv");
-        network.train(examples, expecteds, .15, 250000);
+        network.createPicture();
+        //network.train(examples, expecteds, .15, 250000);
         //network.saveWB("C:\\Users\\super\\IdeaProjects\\NeuralNetwork4\\src\\WBTest.csv");
     }
 }

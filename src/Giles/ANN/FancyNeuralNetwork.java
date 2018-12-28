@@ -4,6 +4,7 @@ import Giles.util.CSVReader;
 import Giles.util.CSVWriter;
 import Giles.util.NewProcessor;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -13,23 +14,24 @@ public class FancyNeuralNetwork extends NeuralNetwork {
     private boolean csvReady = false;
     private CSVWriter csvWriter;
 
-    //"WB" refers to "weights and biases" - these pertain to the writing/saving/loading of weights and biases to/from a csv file
-    private CSVWriter wbWriter;
-    private CSVReader wbReader;
-    Integer inputs, hiddens, outputs;
+    public Integer inputLayerSize, hiddenLayerSize, outputLayerSize; //Number of neurons in each respective layer
 
 
     public FancyNeuralNetwork(int numInputs, int numHiddens, int numOutputs) {
         super(numInputs, numHiddens, numOutputs);
-        inputs = numInputs;
-        hiddens = numHiddens;
-        outputs = numOutputs;
+        inputLayerSize = numInputs;
+        hiddenLayerSize = numHiddens;
+        outputLayerSize = numOutputs;
     }
 
     //Allows the user to initialize a network using a csv of saved weights/biases
     public FancyNeuralNetwork(String weightsBiasesFilename) {
         super(0, 0, 0);
         loadWB(weightsBiasesFilename);
+    }
+
+    protected List<List<Neuron>> getNeurons(){
+        return network;
     }
 
     //Trains the network by running backprop using the given examples, <numberOfIterations> number of times
@@ -46,7 +48,7 @@ public class FancyNeuralNetwork extends NeuralNetwork {
             totalError = 0;
             numberCorrect = 0;
             for(List<Double> currentExample : examples){ //Cycle through training examples
-                currentOutputs = new ArrayList<>(forwardProp(currentExample)); //Get outputs based on inputs of current example
+                currentOutputs = new ArrayList<>(forwardProp(currentExample)); //Get outputLayerSize based on inputLayerSize of current example
                 currentExpecteds = new ArrayList<>(expectedOutcomes.get(examples.indexOf(currentExample)));
 
                 //printExampleSummary(currentExample, currentExpecteds);
@@ -97,13 +99,15 @@ public class FancyNeuralNetwork extends NeuralNetwork {
         csvReady = true;
     }
 
+    //"WB" refers to "weights and biases" - these pertain to the writing/saving/loading of weights and biases to/from a csv file
     public void saveWB(String wbFilename){
+        CSVWriter wbWriter;
         wbWriter = new CSVWriter(wbFilename);
         List<List<String>> weights = new ArrayList<>();
         List<String> biases = new ArrayList<>();
 
         //First set is number of input neurons, followed by number of hidden neurons, followed by number of output neurons
-        wbWriter.addSet(new ArrayList<>(Arrays.asList(inputs.toString(), hiddens.toString(), outputs.toString())));
+        wbWriter.addSet(new ArrayList<>(Arrays.asList(inputLayerSize.toString(), hiddenLayerSize.toString(), outputLayerSize.toString())));
 
         for (List<Neuron> layer : network) { //Cycle through layers
             for (Neuron neuron : layer) { //Cycle through neurons in layer
@@ -121,18 +125,19 @@ public class FancyNeuralNetwork extends NeuralNetwork {
         wbWriter.addSet(biases);
         wbWriter.write();
     }
-
     private void loadWB(String wbFilename){
+        CSVReader wbReader;
+
         //Read in weights and biases from file - each neuron's weights are stored in a list, and all the biases are stored in one list at the end of the list of lists
         wbReader = new CSVReader(wbFilename);
-        List<List<Double>> wb = new ArrayList<>();
+        List<List<Double>> wb;
         wb = new ArrayList<>(NewProcessor.readAndStore(wbReader));
 
         //Retrieve number of neurons in each layer from first List in "wb", and initialize the network using these values
-        inputs = wb.get(0).get(0).intValue();
-        hiddens = wb.get(0).get(1).intValue();
-        outputs = wb.get(0).get(2).intValue();
-        init(inputs, hiddens, outputs);
+        inputLayerSize = wb.get(0).get(0).intValue();
+        hiddenLayerSize = wb.get(0).get(1).intValue();
+        outputLayerSize = wb.get(0).get(2).intValue();
+        init(inputLayerSize, hiddenLayerSize, outputLayerSize);
 
         //Load in weights
         //Note: Lists stored in "wb" correspond to neurons (each Neuron has its own List of weights), and last List is the list of all the biases
@@ -182,7 +187,13 @@ public class FancyNeuralNetwork extends NeuralNetwork {
         return outputNames[super.getPrediction(inputs)];
     }
 
-
-
-
+    public void createPicture(){
+        JFrame frame = new JFrame("Neural Network Image");
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.add(new AdvancedNetworkPicture(this));
+        //frame.add(new NetworkPicture(inputLayerSize, hiddenLayerSize, outputLayerSize));
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    }
 }
