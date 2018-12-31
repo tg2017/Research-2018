@@ -21,7 +21,7 @@ public class NetworkPicture extends JPanel {
     //Constants, mostly for size
     private final int MAXSIZE = 50;
     private final double SPACE = 5;
-    private final double VERTICALSPACE = 350;
+    private final double VERTICALSPACE = 300 ;
     private final int WIDTH = 1500;
 
     private double midpoint, inputXStart, hiddenXStart, outputXStart;

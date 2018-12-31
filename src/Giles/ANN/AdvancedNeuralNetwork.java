@@ -221,7 +221,11 @@ public class AdvancedNeuralNetwork extends NeuralNetwork {
         return theList;
     }
     public List<String> test(List<List<Double>> inputs, List<String> outputNames){
-        return test(inputs, (String[])outputNames.toArray());
+        String[] temp = new String[outputNames.size()];
+        for(String str : outputNames){
+            temp[outputNames.indexOf(str)] = str;
+        }
+        return test(inputs, temp);
     }
 
     //Create a representative image of the network

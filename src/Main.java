@@ -103,11 +103,11 @@ public class Main {
             System.out.println("Outputs: " + network.forwardProp(example));
         }*/
 
-        network.setCSVFile("C:\\Users\\super\\IdeaProjects\\NeuralNetwork4\\src\\Test.csv");
+        network.setCSVFile("C:\\Users\\super\\Documents\\All Files\\School\\Research\\Research-2018\\CSVs\\Test.csv");
         network.createSimplePicture();
         network.createPicture();
+        network.train(examples, expecteds, .4, AdvancedNeuralNetwork.CORRECT_LINEAR, 50000, true);
         System.out.println(network.test(examples, outputNames).toString());
-        //network.train(examples, expecteds, .4, AdvancedNeuralNetwork.CORRECT_LINEAR, 150000, true);
         network.createPicture();
         //network.saveWB("C:\\Users\\super\\IdeaProjects\\NeuralNetwork4\\src\\WBTest.csv");
     }
