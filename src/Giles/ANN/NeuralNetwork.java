@@ -12,9 +12,13 @@ import java.util.List;
 public class NeuralNetwork {
 
     List<List<Neuron>> network;
+    public Integer inputLayerSize, hiddenLayerSize, outputLayerSize; //Number of neurons in each respective layer
 
     public NeuralNetwork(int numInputs, int numHiddens, int numOutputs) {
         network = new ArrayList<>();
+        inputLayerSize = numInputs;
+        hiddenLayerSize = numHiddens;
+        outputLayerSize = numOutputs;
         List<Neuron> hiddenLayer = new ArrayList<>();
         Neuron currentNeuron;
         for (int i = 0; i < numHiddens; i++) { //Cycles through each neuron of hidden layer
@@ -45,6 +49,11 @@ public class NeuralNetwork {
         for (List<Neuron> layer : network) {
             System.out.println(layer);
         }
+    }
+
+    //Return the list of neurons
+    protected List<List<Neuron>> getNeurons(){
+        return network;
     }
 
     //Finds the raw value of the neuron's activation

@@ -18,16 +18,16 @@ public class NetworkPicture extends JPanel {
     protected boolean[] overflow = new boolean[3];
     protected int[] initialSizes = new int[3];
 
-    final int MAXSIZE = 50; //MUST BE AN EVEN NUMBER (otherwise overflowed layers will not appear centered)
-    double diameter = 20;
-    final double SPACE = 5;
-    final double VERTICALSPACE = 350;
-    final int WIDTH = 1500;
+    //Constants, mostly for size
+    private final int MAXSIZE = 50;
+    private final double SPACE = 5;
+    private final double VERTICALSPACE = 350;
+    private final int WIDTH = 1500;
 
     private double midpoint, inputXStart, hiddenXStart, outputXStart;
     private int largestLayerSize = 0;
+    private double diameter = 20;
 
-    NetworkPicture(){}
 
     public NetworkPicture(int inputNum, int hiddenNum, int outputNum) {
 

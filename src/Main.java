@@ -1,10 +1,9 @@
-import Giles.ANN.FancyNeuralNetwork;
+import Giles.ANN.AdvancedNeuralNetwork;
 import Giles.util.CSVReader;
 import Giles.util.NewProcessor;
 
 import javax.swing.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -15,13 +14,12 @@ public class Main {
     private static List<String> outputNames = new ArrayList<>();//{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "AA", "AB", "AC", "AD", "AE", "AF", "AG", "AH", "AI", "AJ", "AK", "AL", "AM", "AN", "AO", "AP", "AQ", "AR", "AS", "AT", "AU", "AV", "AW", "AX", "AY", "AZ", "BA", "BB", "BC", "BD", "BE", "BF", "BG", "BH", "BI"};
     private static String[] alphabet = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
 
-    private static CSVReader inReader = new CSVReader("C:\\Users\\super\\Desktop\\Profiles.csv");
+    private static CSVReader inReader = new CSVReader("C:\\Users\\super\\Desktop\\Profiles1.csv");
     private static CSVReader outReader = new CSVReader("C:\\Users\\super\\IdeaProjects\\NeuralNetwork4\\src\\outputtest.txt");
 
     public static void main(String[] args) {
         examples = new ArrayList<>(NewProcessor.readAndStore(inReader));
         expectedsStrings = new ArrayList<>(NewProcessor.readAndStoreString(outReader));
-
 
         //Change all example values to activations
         for(List<Double> example : examples){
@@ -34,10 +32,9 @@ public class Main {
             }
         }
 
-
-        //This chunk gives the outputLayerSize alphabetical names, beginning with A
+        //This chunk gives the output neurons alphabetical names, beginning with A
         int alphabetCounter = -1;
-        //Names all outputLayerSize in full sets of 26
+        //Names all output neurons in full sets of 26
         for(int i = 0; i < examples.size() / alphabet.length; i++){
             if(alphabetCounter == -1){
                 Collections.addAll(outputNames, alphabet);
@@ -49,7 +46,7 @@ public class Main {
             alphabetCounter++;
         }
 
-        //Names remaining outputLayerSize
+        //Names remaining output neurons
         for(int k = 0; k < (examples.size() % alphabet.length); k++){
             if(alphabetCounter == -1){
                 outputNames.add(alphabet[k]);
@@ -59,7 +56,16 @@ public class Main {
         }
 
         //Sets the "expecteds" values based on the output names, if the expected values provided are in the form of names
-        if(NewProcessor.isDouble(expectedsStrings.get(0).get(0))){
+        boolean allDoubles = true;
+        for(List<String> expectedsStringList : expectedsStrings){
+            for(String expectedString : expectedsStringList){
+                if(!NewProcessor.isDouble(expectedString)){
+                    allDoubles = false;
+                    break;
+                }
+            }
+        }
+        if(allDoubles){
             List<Double> tempList;
             for (List<String> currentList : expectedsStrings) {
                 tempList = new ArrayList<>();
@@ -88,8 +94,8 @@ public class Main {
         System.out.println("Examples: " + examples);
         System.out.println("Expected Outcomes: " + expecteds);
 
-        FancyNeuralNetwork network = new FancyNeuralNetwork(examples.get(0).size(), 20, expecteds.get(0).size());
-        //FancyNeuralNetwork network = new FancyNeuralNetwork("C:\\Users\\super\\IdeaProjects\\NeuralNetwork4\\src\\WBTest.csv");
+        AdvancedNeuralNetwork network = new AdvancedNeuralNetwork(examples.get(0).size(), 20, expecteds.get(0).size());
+        //AdvancedNeuralNetwork network = new AdvancedNeuralNetwork("C:\\Users\\super\\IdeaProjects\\NeuralNetwork4\\src\\WBTest.csv");
         System.out.println();
         network.print(); 
 
@@ -97,10 +103,12 @@ public class Main {
             System.out.println("Outputs: " + network.forwardProp(example));
         }*/
 
-
-        network.setCSVFile("C:\\Users\\super\\IdeaProjects\\NeuralNetwork4\\src\\CSVTest.csv");
+        network.setCSVFile("C:\\Users\\super\\IdeaProjects\\NeuralNetwork4\\src\\Test.csv");
+        network.createSimplePicture();
         network.createPicture();
-        //network.train(examples, expecteds, .15, 250000);
+        System.out.println(network.test(examples, outputNames).toString());
+        //network.train(examples, expecteds, .4, AdvancedNeuralNetwork.CORRECT_LINEAR, 150000, true);
+        network.createPicture();
         //network.saveWB("C:\\Users\\super\\IdeaProjects\\NeuralNetwork4\\src\\WBTest.csv");
     }
 }

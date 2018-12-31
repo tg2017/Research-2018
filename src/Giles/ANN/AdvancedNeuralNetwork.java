@@ -5,37 +5,38 @@ import Giles.util.CSVWriter;
 import Giles.util.NewProcessor;
 
 import javax.swing.*;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class FancyNeuralNetwork extends NeuralNetwork {
+public class AdvancedNeuralNetwork extends NeuralNetwork {
 
     private boolean csvReady = false;
     private CSVWriter csvWriter;
 
-    public Integer inputLayerSize, hiddenLayerSize, outputLayerSize; //Number of neurons in each respective layer
+    private NumberFormat format = NumberFormat.getNumberInstance();
 
+    public static final int CONSTANT = 0;
+    public static final int ITERATION_LINEAR = 1;
+    public static final int ITERATION_QUADRATIC = 2;
+    public static final int CORRECT_LINEAR = 3;
+    public static final int CORRECT_QUADRATIC = 4;
 
-    public FancyNeuralNetwork(int numInputs, int numHiddens, int numOutputs) {
+    public AdvancedNeuralNetwork(int numInputs, int numHiddens, int numOutputs) {
         super(numInputs, numHiddens, numOutputs);
-        inputLayerSize = numInputs;
-        hiddenLayerSize = numHiddens;
-        outputLayerSize = numOutputs;
+        format.setMaximumFractionDigits(9);
+        format.setMinimumFractionDigits(9);
     }
 
     //Allows the user to initialize a network using a csv of saved weights/biases
-    public FancyNeuralNetwork(String weightsBiasesFilename) {
+    public AdvancedNeuralNetwork(String weightsBiasesFilename) {
         super(0, 0, 0);
         loadWB(weightsBiasesFilename);
     }
 
-    protected List<List<Neuron>> getNeurons(){
-        return network;
-    }
-
-    //Trains the network by running backprop using the given examples, <numberOfIterations> number of times
-    public void train(List<List<Double>> examples, List<List<Double>> expectedOutcomes, double learningRate, boolean dynamicRate, int numberOfIterations, boolean printMonitor){
+    //Trains the network by running backprop using the given examples, <numberOfIterations> number of times, and changes the learning rate using the specified algorithm
+    public void train(List<List<Double>> examples, List<List<Double>> expectedOutcomes, double learningRate, int dynamicLearningRate, int numberOfIterations, boolean printMonitor){
         double totalError;
         int numberCorrect;
 
@@ -44,6 +45,7 @@ public class FancyNeuralNetwork extends NeuralNetwork {
 
         List<Double> currentOutputs;
         List<Double> currentExpecteds;
+        double dynamicRate = learningRate;
         for(int iteration = 0; iteration < numberOfIterations; iteration++){ //Repeat for each iteration
             totalError = 0;
             numberCorrect = 0;
@@ -64,16 +66,20 @@ public class FancyNeuralNetwork extends NeuralNetwork {
                     //System.out.println(Math.pow((currentExpecteds.get(i) - currentOutputs.get(i)), 2));
                 }
                 backProp(currentExpecteds);
-                learn(learningRate, currentExample);
+                learn(dynamicRate, currentExample);
             }
+
+
+
             if(printMonitor)
-                System.out.println("Iteration: " + (iteration+1) + "\t\tTotal Error: " + totalError + "\t\tNumber Correct: " + numberCorrect);
+                System.out.println("Iteration: " + (iteration+1) + "\t\tLearning Rate: " + format.format(dynamicRate) + "\t\tTotal Error: " + format.format(totalError) + "\t\tNumber Correct: " + numberCorrect);
 
             //For printing data to CSV
             if(csvReady) {
                 if (iteration == 0) {
                     currentSet = new ArrayList<>();
                     currentSet.add("Iteration");
+                    currentSet.add("Learning Rate");
                     currentSet.add("Total Error");
                     currentSet.add("Number Correct");
                     csvWriter.addSet(currentSet);
@@ -81,17 +87,35 @@ public class FancyNeuralNetwork extends NeuralNetwork {
 
                 currentSet = new ArrayList<>();
                 currentSet.add(((Integer) (iteration + 1)).toString());
+                currentSet.add(((Double) (dynamicRate)).toString());
                 currentSet.add(((Double) (totalError)).toString());
                 currentSet.add(((Integer) (numberCorrect)).toString());
                 csvWriter.addSet(currentSet);
             }
+
+            //Change learning rate
+            switch(dynamicLearningRate){
+                case CONSTANT:
+                    dynamicRate = learningRate; break;
+                case ITERATION_LINEAR:
+                    dynamicRate = ((learningRate * -1)/numberOfIterations) * iteration + learningRate; break;
+                case ITERATION_QUADRATIC:
+                    dynamicRate = ((learningRate * -1) / Math.pow(numberOfIterations, 2)) * (Math.pow(iteration, 2) - Math.pow(numberOfIterations, 2)); break;
+                case CORRECT_LINEAR:
+                    dynamicRate = ((learningRate * -1)/expectedOutcomes.size()) * numberCorrect + learningRate; break;
+                case CORRECT_QUADRATIC:
+                    dynamicRate = ((learningRate * -1) / Math.pow(expectedOutcomes.size(), 2)) * (Math.pow(numberCorrect, 2) - Math.pow(expectedOutcomes.size(), 2)); break;
+                default:
+                    dynamicRate = learningRate; break;
+            }
         }
+
         if(csvReady)
             csvWriter.write();
     }
 
     public void train(List<List<Double>> examples, List<List<Double>> expectedOutcomes, double learningRate, int numberOfIterations){
-        train(examples, expectedOutcomes, learningRate, false, numberOfIterations, true);
+        train(examples, expectedOutcomes, learningRate, CONSTANT, numberOfIterations, true);
     }
 
     public void setCSVFile(String csvFilename){
@@ -155,13 +179,14 @@ public class FancyNeuralNetwork extends NeuralNetwork {
 
     }
 
+    //Initializes the network with random weights and biases
     private void init(int numInputs, int numHiddens, int numOutputs){
         network = new ArrayList<>();
         List<Neuron> hiddenLayer = new ArrayList<>();
         Neuron currentNeuron;
-        for(int i = 0; i < numHiddens; i++) { //Cycles through each neuron of hidden layer
+        for(int i = 0; i < numHiddens; i++) { //Cycle through each neuron of hidden layer
             currentNeuron = new Neuron();
-            for (int j = 0; j < numInputs; j++) { //Cycles through each neuron of input layer
+            for (int j = 0; j < numInputs; j++) { //Cycle through each neuron of input layer
                 currentNeuron.addWeight(Math.random()); //Weights
             }
             currentNeuron.setBias(Math.random()); //Add a bias for each hidden layer neuron
@@ -169,9 +194,9 @@ public class FancyNeuralNetwork extends NeuralNetwork {
         }
 
         List<Neuron> outputLayer = new ArrayList<>();
-        for(int i = 0; i < numOutputs; i++) { //Cycles through each neuron of output layer
+        for(int i = 0; i < numOutputs; i++) { //Cycle through each neuron of output layer
             currentNeuron = new Neuron();
-            for (int j = 0; j < numHiddens; j++) { //Cycles through each neuron of hidden layer
+            for (int j = 0; j < numHiddens; j++) { //Cycle through each neuron of hidden layer
                 currentNeuron.addWeight(Math.random()); //Weights
             }
             currentNeuron.setBias(Math.random()); //Add a bias for each output layer neuron
@@ -187,11 +212,31 @@ public class FancyNeuralNetwork extends NeuralNetwork {
         return outputNames[super.getPrediction(inputs)];
     }
 
+    //Returns the results of the network's predictions of the output names of the supplied inputs
+    public List<String> test(List<List<Double>> inputs, String[] outputNames){
+        List<String> theList = new ArrayList<>();
+        for(List<Double> input : inputs){
+            theList.add(getPrediction(input, outputNames));
+        }
+        return theList;
+    }
+    public List<String> test(List<List<Double>> inputs, List<String> outputNames){
+        return test(inputs, (String[])outputNames.toArray());
+    }
+
+    //Create a representative image of the network
     public void createPicture(){
         JFrame frame = new JFrame("Neural Network Image");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.add(new AdvancedNetworkPicture(this));
-        //frame.add(new NetworkPicture(inputLayerSize, hiddenLayerSize, outputLayerSize));
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    }
+    public void createSimplePicture(){ //This option has no color to indicate weights and biases - just black
+        JFrame frame = new JFrame("Neural Network Image");
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.add(new NetworkPicture(inputLayerSize, hiddenLayerSize, outputLayerSize));
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
