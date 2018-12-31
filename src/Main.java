@@ -14,8 +14,8 @@ public class Main {
     private static List<String> outputNames = new ArrayList<>();//{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "AA", "AB", "AC", "AD", "AE", "AF", "AG", "AH", "AI", "AJ", "AK", "AL", "AM", "AN", "AO", "AP", "AQ", "AR", "AS", "AT", "AU", "AV", "AW", "AX", "AY", "AZ", "BA", "BB", "BC", "BD", "BE", "BF", "BG", "BH", "BI"};
     private static String[] alphabet = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
 
-    private static CSVReader inReader = new CSVReader("C:\\Users\\super\\Desktop\\Profiles1.csv");
-    private static CSVReader outReader = new CSVReader("C:\\Users\\super\\IdeaProjects\\NeuralNetwork4\\src\\outputtest.txt");
+    private static CSVReader inReader = new CSVReader("C:\\Users\\super\\Documents\\All Files\\School\\Research\\Research-2018\\CSVs\\Profiles1.csv");
+    private static CSVReader outReader = new CSVReader("C:\\Users\\super\\Documents\\All Files\\School\\Research\\Research-2018\\CSVs\\Expected-Outputs.txt");
 
     public static void main(String[] args) {
         examples = new ArrayList<>(NewProcessor.readAndStore(inReader));
