@@ -233,12 +233,12 @@ public class AdvancedNeuralNetwork extends NeuralNetwork {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
-    public void createSimplePicture(){ //This option has no color to indicate weights and biases - just black
+    public void createSimplePicture(){
         JFrame frame = new JFrame("Neural Network Image");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.add(new NetworkPicture(inputLayerSize, hiddenLayerSize, outputLayerSize));
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
-    }
+    }//This option has no color to indicate weights and biases - just black
 }
