@@ -20,8 +20,8 @@ public class AdvancedNeuralNetwork extends NeuralNetwork {
     public static final int CONSTANT = 0;
     public static final int ITERATION_LINEAR = 1;
     public static final int ITERATION_QUADRATIC = 2;
-    public static final int CORRECT_LINEAR = 3;
-    public static final int CORRECT_QUADRATIC = 4;
+    public static final int ACCURACY_LINEAR = 3;
+    public static final int ACCURACY_QUADRATIC = 4;
 
     public AdvancedNeuralNetwork(int numInputs, int numHiddens, int numOutputs) {
         super(numInputs, numHiddens, numOutputs);
@@ -101,9 +101,9 @@ public class AdvancedNeuralNetwork extends NeuralNetwork {
                     dynamicRate = ((learningRate * -1)/numberOfIterations) * iteration + learningRate; break;
                 case ITERATION_QUADRATIC:
                     dynamicRate = ((learningRate * -1) / Math.pow(numberOfIterations, 2)) * (Math.pow(iteration, 2) - Math.pow(numberOfIterations, 2)); break;
-                case CORRECT_LINEAR:
+                case ACCURACY_LINEAR:
                     dynamicRate = ((learningRate * -1)/expectedOutcomes.size()) * numberCorrect + learningRate; break;
-                case CORRECT_QUADRATIC:
+                case ACCURACY_QUADRATIC:
                     dynamicRate = ((learningRate * -1) / Math.pow(expectedOutcomes.size(), 2)) * (Math.pow(numberCorrect, 2) - Math.pow(expectedOutcomes.size(), 2)); break;
                 default:
                     dynamicRate = learningRate; break;

@@ -5,7 +5,6 @@
  */
 package GUI.src;
 import Giles.util.NewProcessor;
-import Giles.ANN.AdvancedNeuralNetwork;
 import Main.Main;
 
 import javax.swing.*;
@@ -89,7 +88,7 @@ public class Settings extends javax.swing.JFrame {
         accuracyRadio = new javax.swing.JRadioButton();
         dynamicRateCheckbox1 = new javax.swing.JCheckBox();
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        learningRateTextbox = new javax.swing.JTextField();
         jPanel5 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         lettersNameTypeRadio = new javax.swing.JRadioButton();
@@ -554,8 +553,8 @@ public class Settings extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jLabel1.setText("*Initial Learning Rate:");
 
-        jTextField1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField1.setText("0.40");
+        learningRateTextbox.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        learningRateTextbox.setText("0.40");
 
         javax.swing.GroupLayout jPanel13Layout = new javax.swing.GroupLayout(jPanel13);
         jPanel13.setLayout(jPanel13Layout);
@@ -574,7 +573,7 @@ public class Settings extends javax.swing.JFrame {
                     .addGroup(jPanel13Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(learningRateTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel13Layout.setVerticalGroup(
@@ -583,7 +582,7 @@ public class Settings extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(learningRateTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(dynamicRateCheckbox1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -703,7 +702,7 @@ public class Settings extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 723, Short.MAX_VALUE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 723, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -953,18 +952,51 @@ public class Settings extends javax.swing.JFrame {
     }//GEN-LAST:event_numbersNameTypeRadioActionPerformed
 
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
+        Main.setInputsFilename(inputsFilebox.getText());
+        Main.setOutputsFilename(outputsFilebox.getText());
         Main.setSaveReport(saveReportCheckbox.isSelected());
         Main.setReportFilename(saveReportFilebox.getText());
-        Main.setOutputsFilename(outputsFilebox.getText());
-        Main.setInputsFilename(inputsFilebox.getText());
-        Main.setUserNamesFilename(outputNamesFilebox.getText());
-        Main.setSaveNetworkFilename(saveNetworkFilebox.getText());
         Main.setSaveState(saveNetworkCheckbox.isSelected());
-        Main.setLoadNetworkFilename(loadNetworkFilebox.getText());
+        Main.setSaveNetworkFilename(saveNetworkFilebox.getText());
         Main.setLoadState(loadNetworkCheckbox.isSelected());
-        Main.setCreatePicture(imageCheckbox.isSelected());
-        Main.setPrintMonitor(printMonitorCheckbox.isSelected());
+        Main.setLoadNetworkFilename(loadNetworkFilebox.getText());
         Main.setNumberOfHiddens(NewProcessor.convertToInteger(hiddenNeuronsTextbox.getText()));
+        Main.setIterations(NewProcessor.convertToInteger(iterationsTextbox.getText()));
+        Main.setPrintMonitor(printMonitorCheckbox.isSelected());
+        Main.setCreatePicture(imageCheckbox.isSelected());
+        Main.setLearningRate(NewProcessor.convertToDouble(learningRateTextbox.getText()));
+        if(dynamicRateCheckbox1.isSelected()){
+            if(iterationRadio.isSelected()){
+                if(linearRadio.isSelected()){
+                    Main.setDynamicType(Main.ITERATION_LINEAR);
+                } else {
+                    Main.setDynamicType(Main.ITERATION_QUADRATIC);
+                }
+            } else {
+                if(linearRadio.isSelected()){
+                    Main.setDynamicType(Main.ACCURACY_LINEAR);
+                } else {
+                    Main.setDynamicType(Main.ACCURACY_QUADRATIC);
+                }
+            }
+        } else {
+            Main.setDynamicType(Main.CONSTANT);
+        }
+
+        if(numbersNameTypeRadio.isSelected()){
+            Main.setOutputNamesType(Main.NUMBERS_NAMES);
+        } else if(lettersNameTypeRadio.isSelected()){
+            Main.setOutputNamesType(Main.LETTERS_NAMES);
+        } else if(userNameTypeRadio.isSelected()){
+            Main.setOutputNamesType(Main.USER_NAMES);
+            Main.setUserNamesFilename(outputNamesFilebox.getText());
+        }
+
+
+
+
+
+        Main.startProgram();
     }//GEN-LAST:event_startButtonActionPerformed
 
     /**
@@ -1035,7 +1067,7 @@ public class Settings extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel7;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField learningRateTextbox;
     private javax.swing.JRadioButton lettersNameTypeRadio;
     private javax.swing.JRadioButton linearRadio;
     private javax.swing.JCheckBox loadNetworkCheckbox;

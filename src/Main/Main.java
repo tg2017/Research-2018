@@ -23,8 +23,8 @@ public class Main {
     public static final int CONSTANT = AdvancedNeuralNetwork.CONSTANT;
     public static final int ITERATION_LINEAR = AdvancedNeuralNetwork.ITERATION_LINEAR;
     public static final int ITERATION_QUADRATIC = AdvancedNeuralNetwork.ITERATION_QUADRATIC;
-    public static final int CORRECT_LINEAR = AdvancedNeuralNetwork.CORRECT_LINEAR;
-    public static final int CORRECT_QUADRATIC = AdvancedNeuralNetwork.CORRECT_QUADRATIC;
+    public static final int ACCURACY_LINEAR = AdvancedNeuralNetwork.ACCURACY_LINEAR;
+    public static final int ACCURACY_QUADRATIC = AdvancedNeuralNetwork.ACCURACY_QUADRATIC;
 
     //Variables that are changes in settings are initialized with defaults
     private static double learningRate = .4;
@@ -52,9 +52,6 @@ public class Main {
     }
 
     public static void startProgram(){
-
-        init();
-
 
         examples = new ArrayList<>(NewProcessor.readAndStore(inReader));
         expectedsStrings = new ArrayList<>(NewProcessor.readAndStoreString(outReader));
@@ -144,7 +141,7 @@ public class Main {
         network.setCSVFile("C:\\Users\\super\\Documents\\All Files\\School\\Research\\Research-2018\\CSVs\\Test.csv");
         network.createSimplePicture();
         network.createPicture();
-        network.train(examples, expecteds, .4, AdvancedNeuralNetwork.CORRECT_LINEAR, 50000, true);
+        network.train(examples, expecteds, .4, AdvancedNeuralNetwork.ACCURACY_LINEAR, 50000, true);
         System.out.println(network.test(examples, outputNames).toString());
         network.createPicture();
         //network.saveWB("C:\\Users\\super\\IdeaProjects\\NeuralNetwork4\\src\\WBTest.csv");
