@@ -1,3 +1,5 @@
+package Main;
+
 import Giles.ANN.AdvancedNeuralNetwork;
 import Giles.util.CSVReader;
 import Giles.util.NewProcessor;
@@ -17,7 +19,43 @@ public class Main {
     private static CSVReader inReader = new CSVReader("C:\\Users\\super\\Documents\\All Files\\School\\Research\\Research-2018\\CSVs\\Profiles1.csv");
     private static CSVReader outReader = new CSVReader("C:\\Users\\super\\Documents\\All Files\\School\\Research\\Research-2018\\CSVs\\Expected-Outputs.txt");
 
+    public static final int NUMBERS_NAMES = 0, LETTERS_NAMES = 1, USER_NAMES = 2;
+    public static final int CONSTANT = AdvancedNeuralNetwork.CONSTANT;
+    public static final int ITERATION_LINEAR = AdvancedNeuralNetwork.ITERATION_LINEAR;
+    public static final int ITERATION_QUADRATIC = AdvancedNeuralNetwork.ITERATION_QUADRATIC;
+    public static final int CORRECT_LINEAR = AdvancedNeuralNetwork.CORRECT_LINEAR;
+    public static final int CORRECT_QUADRATIC = AdvancedNeuralNetwork.CORRECT_QUADRATIC;
+
+    //Variables that are changes in settings are initialized with defaults
+    private static double learningRate = .4;
+    private static int iterations = 150000;
+    private static int numberOfHiddens = 24;
+    private static boolean useDynamic = false;
+    private static boolean printMonitor = true;
+    private static boolean createPicture = true;
+    private static boolean saveReport = false;
+    private static boolean saveState = false;
+    private static boolean loadState = false;
+    private static String inputsFilename;
+    private static String outputsFilename;
+    private static String reportFilename;
+    private static String userNamesFilename;
+    private static String saveNetworkFilename;
+    private static String loadNetworkFilename;
+    private static int outputNamesType = LETTERS_NAMES;
+    private static int dynamicType = CONSTANT;
+
+
+
     public static void main(String[] args) {
+       //TODO: Open GUI
+    }
+
+    public static void startProgram(){
+
+        init();
+
+
         examples = new ArrayList<>(NewProcessor.readAndStore(inReader));
         expectedsStrings = new ArrayList<>(NewProcessor.readAndStoreString(outReader));
 
@@ -26,9 +64,9 @@ public class Main {
             for(Double value : example){
                 example.set(example.indexOf(value),
                         //NewProcessor.sigmoid(
-                         value
+                        value
                         // )
-                        );
+                );
             }
         }
 
@@ -97,7 +135,7 @@ public class Main {
         AdvancedNeuralNetwork network = new AdvancedNeuralNetwork(examples.get(0).size(), 20, expecteds.get(0).size());
         //AdvancedNeuralNetwork network = new AdvancedNeuralNetwork("C:\\Users\\super\\IdeaProjects\\NeuralNetwork4\\src\\WBTest.csv");
         System.out.println();
-        network.print(); 
+        network.print();
 
         /*for (List<Double> example : examples) {
             System.out.println("Outputs: " + network.forwardProp(example));
@@ -110,5 +148,126 @@ public class Main {
         System.out.println(network.test(examples, outputNames).toString());
         network.createPicture();
         //network.saveWB("C:\\Users\\super\\IdeaProjects\\NeuralNetwork4\\src\\WBTest.csv");
+    }
+
+
+    //Getters and Setters
+    public static void setLearningRate(double rate){
+        learningRate = rate;
+    }
+    public static double getLearningRate(){
+        return learningRate;
+    }
+
+    public static int getIterations() {
+        return iterations;
+    }
+    public static void setIterations(int iterations) {
+        Main.iterations = iterations;
+    }
+
+    public static int getNumberOfHiddens() {
+        return numberOfHiddens;
+    }
+    public static void setNumberOfHiddens(int numberOfHiddens) {
+        Main.numberOfHiddens = numberOfHiddens;
+    }
+
+    public static boolean isUseDynamic() {
+        return useDynamic;
+    }
+    public static void setUseDynamic(boolean useDynamic) {
+        Main.useDynamic = useDynamic;
+    }
+
+    public static boolean isPrintMonitor() {
+        return printMonitor;
+    }
+    public static void setPrintMonitor(boolean printMonitor) {
+        Main.printMonitor = printMonitor;
+    }
+
+    public static boolean isCreatePicture() {
+        return createPicture;
+    }
+    public static void setCreatePicture(boolean createPicture) {
+        Main.createPicture = createPicture;
+    }
+
+    public static boolean isSaveReport() {
+        return saveReport;
+    }
+    public static void setSaveReport(boolean saveReport) {
+        Main.saveReport = saveReport;
+    }
+
+    public static boolean isSaveState() {
+        return saveState;
+    }
+    public static void setSaveState(boolean saveState) {
+        Main.saveState = saveState;
+    }
+
+    public static boolean isLoadState() {
+        return loadState;
+    }
+    public static void setLoadState(boolean loadState) {
+        Main.loadState = loadState;
+    }
+
+    public static String getInputsFilename() {
+        return inputsFilename;
+    }
+    public static void setInputsFilename(String inputsFilename) {
+        Main.inputsFilename = inputsFilename;
+    }
+
+    public static String getOutputsFilename() {
+        return outputsFilename;
+    }
+    public static void setOutputsFilename(String outputsFilename) {
+        Main.outputsFilename = outputsFilename;
+    }
+
+    public static String getReportFilename() {
+        return reportFilename;
+    }
+    public static void setReportFilename(String reportFilename) {
+        Main.reportFilename = reportFilename;
+    }
+
+    public static String getUserNamesFilename() {
+        return userNamesFilename;
+    }
+    public static void setUserNamesFilename(String userNamesFilename) {
+        Main.userNamesFilename = userNamesFilename;
+    }
+
+    public static String getSaveNetworkFilename() {
+        return saveNetworkFilename;
+    }
+    public static void setSaveNetworkFilename(String saveNetworkFilename) {
+        Main.saveNetworkFilename = saveNetworkFilename;
+    }
+
+    public static String getLoadNetworkFilename() {
+        return loadNetworkFilename;
+    }
+    public static void setLoadNetworkFilename(String loadNetworkFilename) {
+        Main.loadNetworkFilename = loadNetworkFilename;
+    }
+
+    public static int getOutputNamesType() {
+        return outputNamesType;
+    }
+    public static void setOutputNamesType(int outputNamesType) {
+        Main.outputNamesType = outputNamesType;
+    }
+
+    public static int getDynamicType() {
+        return dynamicType;
+    }
+    public static void setDynamicType(int dynamicType) {
+        Main.dynamicType = dynamicType;
     }
 }
