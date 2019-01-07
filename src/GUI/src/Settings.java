@@ -93,12 +93,13 @@ public class Settings extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         lettersNameTypeRadio = new javax.swing.JRadioButton();
         numbersNameTypeRadio = new javax.swing.JRadioButton();
-        userNameTypeRadio = new javax.swing.JRadioButton();
+        customTypeRadio = new javax.swing.JRadioButton();
         startButton = new javax.swing.JButton();
         backButton = new javax.swing.JToggleButton();
         exitButton = new javax.swing.JToggleButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
 
         settingsTitle.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         settingsTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -133,6 +134,11 @@ public class Settings extends javax.swing.JFrame {
         });
 
         outputsChooseButton.setText("Choose");
+        outputsChooseButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                outputsChooseButtonActionPerformed(evt);
+            }
+        });
 
         outputsOpenButton.setText("Open");
         outputsOpenButton.addActionListener(new java.awt.event.ActionListener() {
@@ -168,6 +174,7 @@ public class Settings extends javax.swing.JFrame {
         jLabel5.setText("*Input Values File:");
 
         inputsFilebox.setText("Please Select a CSV File");
+        inputsFilebox.setToolTipText("Please Select a CSV File");
         inputsFilebox.setPreferredSize(new java.awt.Dimension(285, 20));
         inputsFilebox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -176,6 +183,11 @@ public class Settings extends javax.swing.JFrame {
         });
 
         inputsChooseButton.setText("Choose");
+        inputsChooseButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                inputsChooseButtonActionPerformed(evt);
+            }
+        });
 
         inputsOpenButton.setText("Open");
         inputsOpenButton.addActionListener(new java.awt.event.ActionListener() {
@@ -218,6 +230,11 @@ public class Settings extends javax.swing.JFrame {
 
         outputNamesChooseButton.setText("Choose");
         outputNamesChooseButton.setEnabled(false);
+        outputNamesChooseButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                outputNamesChooseButtonActionPerformed(evt);
+            }
+        });
 
         outputNamesOpenButton.setText("Open");
         outputNamesOpenButton.setEnabled(false);
@@ -227,7 +244,8 @@ public class Settings extends javax.swing.JFrame {
             }
         });
 
-        jLabel7.setText("User Output Names:");
+        jLabel7.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jLabel7.setText("Custom Output Names:");
 
         javax.swing.GroupLayout jPanel20Layout = new javax.swing.GroupLayout(jPanel20);
         jPanel20.setLayout(jPanel20Layout);
@@ -236,7 +254,7 @@ public class Settings extends javax.swing.JFrame {
             .addGroup(jPanel20Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel7)
-                .addGap(29, 29, 29)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(outputNamesFilebox, javax.swing.GroupLayout.PREFERRED_SIZE, 384, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(outputNamesChooseButton, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -262,6 +280,11 @@ public class Settings extends javax.swing.JFrame {
         });
 
         saveReportChooseButton.setText("Choose");
+        saveReportChooseButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveReportChooseButtonActionPerformed(evt);
+            }
+        });
 
         saveReportOpenButton.setText("Open");
         saveReportOpenButton.addActionListener(new java.awt.event.ActionListener() {
@@ -311,6 +334,11 @@ public class Settings extends javax.swing.JFrame {
         });
 
         saveNetworkChooseButton.setText("Choose");
+        saveNetworkChooseButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveNetworkChooseButtonActionPerformed(evt);
+            }
+        });
 
         saveNetworkOpenButton.setText("Open");
         saveNetworkOpenButton.addActionListener(new java.awt.event.ActionListener() {
@@ -360,6 +388,11 @@ public class Settings extends javax.swing.JFrame {
         });
 
         loadNetworkChooseButton.setText("Choose");
+        loadNetworkChooseButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loadNetworkChooseButtonActionPerformed(evt);
+            }
+        });
 
         loadNetworkOpenButton.setText("Open");
         loadNetworkOpenButton.addActionListener(new java.awt.event.ActionListener() {
@@ -420,7 +453,7 @@ public class Settings extends javax.swing.JFrame {
         jLabel3.setText("*Number of Iterations:");
 
         iterationsTextbox.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        iterationsTextbox.setText("123456");
+        iterationsTextbox.setText("100000");
         iterationsTextbox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 iterationsTextboxActionPerformed(evt);
@@ -444,9 +477,7 @@ public class Settings extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(8, 8, 8)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(imageCheckbox)
-                    .addComponent(printMonitorCheckbox)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -454,8 +485,13 @@ public class Settings extends javax.swing.JFrame {
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(iterationsTextbox, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(iterationsTextbox))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(imageCheckbox)
+                            .addComponent(printMonitorCheckbox))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -482,6 +518,7 @@ public class Settings extends javax.swing.JFrame {
 
         regressionGroup.add(linearRadio);
         linearRadio.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        linearRadio.setSelected(true);
         linearRadio.setText("Linear");
         linearRadio.setEnabled(false);
 
@@ -507,6 +544,7 @@ public class Settings extends javax.swing.JFrame {
 
         basisGroup.add(iterationRadio);
         iterationRadio.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        iterationRadio.setSelected(true);
         iterationRadio.setText("Iteration-Based");
         iterationRadio.setEnabled(false);
         iterationRadio.addActionListener(new java.awt.event.ActionListener() {
@@ -596,7 +634,13 @@ public class Settings extends javax.swing.JFrame {
 
         namesGroup.add(lettersNameTypeRadio);
         lettersNameTypeRadio.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        lettersNameTypeRadio.setSelected(true);
         lettersNameTypeRadio.setText("Letters");
+        lettersNameTypeRadio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                lettersNameTypeRadioActionPerformed(evt);
+            }
+        });
 
         namesGroup.add(numbersNameTypeRadio);
         numbersNameTypeRadio.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
@@ -607,12 +651,12 @@ public class Settings extends javax.swing.JFrame {
             }
         });
 
-        namesGroup.add(userNameTypeRadio);
-        userNameTypeRadio.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        userNameTypeRadio.setText("User-Defined");
-        userNameTypeRadio.addActionListener(new java.awt.event.ActionListener() {
+        namesGroup.add(customTypeRadio);
+        customTypeRadio.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        customTypeRadio.setText("Custom");
+        customTypeRadio.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                userNameTypeRadioActionPerformed(evt);
+                customTypeRadioActionPerformed(evt);
             }
         });
 
@@ -626,7 +670,7 @@ public class Settings extends javax.swing.JFrame {
                     .addComponent(numbersNameTypeRadio, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lettersNameTypeRadio, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(userNameTypeRadio, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(customTypeRadio, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
@@ -639,7 +683,7 @@ public class Settings extends javax.swing.JFrame {
                 .addGap(7, 7, 7)
                 .addComponent(numbersNameTypeRadio)
                 .addGap(7, 7, 7)
-                .addComponent(userNameTypeRadio)
+                .addComponent(customTypeRadio)
                 .addContainerGap())
         );
 
@@ -697,12 +741,17 @@ public class Settings extends javax.swing.JFrame {
         backButton.setText("Back");
 
         exitButton.setText("Exit");
+        exitButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exitButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 723, Short.MAX_VALUE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 723, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -722,7 +771,7 @@ public class Settings extends javax.swing.JFrame {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(networkSection, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(44, 44, 44)
+                .addGap(38, 38, 38)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(startButton)
                     .addComponent(backButton)
@@ -737,13 +786,14 @@ public class Settings extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         pack();
@@ -776,7 +826,9 @@ public class Settings extends javax.swing.JFrame {
     }//GEN-LAST:event_imageCheckboxActionPerformed
 
     private void loadNetworkCheckboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadNetworkCheckboxActionPerformed
-
+        loadNetworkFilebox.setEnabled(loadNetworkCheckbox.isSelected());
+        loadNetworkChooseButton.setEnabled(loadNetworkCheckbox.isSelected());
+        loadNetworkOpenButton.setEnabled(loadNetworkCheckbox.isSelected());
     }//GEN-LAST:event_loadNetworkCheckboxActionPerformed
 
     private void loadNetworkOpenButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadNetworkOpenButtonActionPerformed
@@ -794,7 +846,7 @@ public class Settings extends javax.swing.JFrame {
                     e.printStackTrace();
                 }
             } else {
-                JOptionPane.showMessageDialog(null, "File does not exist", "Error", JOptionPane.ERROR_MESSAGE)
+                JOptionPane.showMessageDialog(null, "File does not exist", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }//GEN-LAST:event_loadNetworkOpenButtonActionPerformed
@@ -804,7 +856,9 @@ public class Settings extends javax.swing.JFrame {
     }//GEN-LAST:event_loadNetworkFileboxActionPerformed
 
     private void saveNetworkCheckboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveNetworkCheckboxActionPerformed
-
+        saveNetworkFilebox.setEnabled(saveNetworkCheckbox.isSelected());
+        saveNetworkChooseButton.setEnabled(saveNetworkCheckbox.isSelected());
+        saveNetworkOpenButton.setEnabled(saveNetworkCheckbox.isSelected());
     }//GEN-LAST:event_saveNetworkCheckboxActionPerformed
 
     private void saveNetworkOpenButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveNetworkOpenButtonActionPerformed
@@ -832,7 +886,9 @@ public class Settings extends javax.swing.JFrame {
     }//GEN-LAST:event_saveNetworkFileboxActionPerformed
 
     private void saveReportCheckboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveReportCheckboxActionPerformed
-
+        saveReportFilebox.setEnabled(saveReportCheckbox.isSelected());
+        saveReportChooseButton.setEnabled(saveReportCheckbox.isSelected());
+        saveReportOpenButton.setEnabled(saveReportCheckbox.isSelected());
     }//GEN-LAST:event_saveReportCheckboxActionPerformed
 
     private void saveReportOpenButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveReportOpenButtonActionPerformed
@@ -935,23 +991,79 @@ public class Settings extends javax.swing.JFrame {
         iterationRadio.setEnabled(dynamicRateCheckbox1.isSelected());
         accuracyRadio.setEnabled(dynamicRateCheckbox1.isSelected());
         linearRadio.setEnabled(dynamicRateCheckbox1.isSelected());
-        quadraticRadio.setEnabled(dynamicRateCheckbox1.isEnabled());
+        quadraticRadio.setEnabled(dynamicRateCheckbox1.isSelected());
 
     }//GEN-LAST:event_dynamicRateCheckbox1ActionPerformed
 
-    private void userNameTypeRadioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userNameTypeRadioActionPerformed
-        outputNamesFilebox.setEnabled(userNameTypeRadio.isSelected());
-        outputNamesChooseButton.setEnabled(userNameTypeRadio.isSelected());
-        outputNamesOpenButton.setEnabled(userNameTypeRadio.isSelected());
-    }//GEN-LAST:event_userNameTypeRadioActionPerformed
+    private void customTypeRadioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_customTypeRadioActionPerformed
+        outputNamesFilebox.setEnabled(customTypeRadio.isSelected());
+        outputNamesChooseButton.setEnabled(customTypeRadio.isSelected());
+        outputNamesOpenButton.setEnabled(customTypeRadio.isSelected());
+    }//GEN-LAST:event_customTypeRadioActionPerformed
 
     private void numbersNameTypeRadioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_numbersNameTypeRadioActionPerformed
-        outputNamesFilebox.setEnabled(userNameTypeRadio.isSelected());
-        outputNamesChooseButton.setEnabled(userNameTypeRadio.isSelected());
-        outputNamesOpenButton.setEnabled(userNameTypeRadio.isSelected());
+        outputNamesFilebox.setEnabled(customTypeRadio.isSelected());
+        outputNamesChooseButton.setEnabled(customTypeRadio.isSelected());
+        outputNamesOpenButton.setEnabled(customTypeRadio.isSelected());
     }//GEN-LAST:event_numbersNameTypeRadioActionPerformed
 
+    private void lettersNameTypeRadioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lettersNameTypeRadioActionPerformed
+        outputNamesFilebox.setEnabled(customTypeRadio.isSelected());
+        outputNamesChooseButton.setEnabled(customTypeRadio.isSelected());
+        outputNamesOpenButton.setEnabled(customTypeRadio.isSelected());
+    }//GEN-LAST:event_lettersNameTypeRadioActionPerformed
+
+
+    private void inputsChooseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputsChooseButtonActionPerformed
+        JFileChooser chooser = new JFileChooser();
+        chooser.showOpenDialog(null);
+        File file = chooser.getSelectedFile();
+        String filename = file.getAbsolutePath().replace("\\", "/");
+        inputsFilebox.setText(filename);
+    }//GEN-LAST:event_inputsChooseButtonActionPerformed
+
+    private void outputsChooseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_outputsChooseButtonActionPerformed
+        JFileChooser chooser = new JFileChooser();
+        chooser.showOpenDialog(null);
+        File file = chooser.getSelectedFile();
+        String filename = file.getAbsolutePath().replace("\\", "/");
+        outputsFilebox.setText(filename);
+    }//GEN-LAST:event_outputsChooseButtonActionPerformed
+
+    private void saveReportChooseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveReportChooseButtonActionPerformed
+        JFileChooser chooser = new JFileChooser();
+        chooser.showOpenDialog(null);
+        File file = chooser.getSelectedFile();
+        String filename = file.getAbsolutePath().replace("\\", "/");
+        saveReportFilebox.setText(filename);
+    }//GEN-LAST:event_saveReportChooseButtonActionPerformed
+
+    private void saveNetworkChooseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveNetworkChooseButtonActionPerformed
+        JFileChooser chooser = new JFileChooser();
+        chooser.showOpenDialog(null);
+        File file = chooser.getSelectedFile();
+        String filename = file.getAbsolutePath().replace("\\", "/");
+        saveNetworkFilebox.setText(filename);
+    }//GEN-LAST:event_saveNetworkChooseButtonActionPerformed
+
+    private void loadNetworkChooseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadNetworkChooseButtonActionPerformed
+        JFileChooser chooser = new JFileChooser();
+        chooser.showOpenDialog(null);
+        File file = chooser.getSelectedFile();
+        String filename = file.getAbsolutePath().replace("\\", "/");
+        loadNetworkFilebox.setText(filename);
+    }//GEN-LAST:event_loadNetworkChooseButtonActionPerformed
+
+    private void outputNamesChooseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_outputNamesChooseButtonActionPerformed
+        JFileChooser chooser = new JFileChooser();
+        chooser.showOpenDialog(null);
+        File file = chooser.getSelectedFile();
+        String filename = file.getAbsolutePath().replace("\\", "/");
+        outputNamesFilebox.setText(filename);
+    }//GEN-LAST:event_outputNamesChooseButtonActionPerformed
+
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
+        //TODO: Add code to reject invalid filenames
         Main.setInputsFilename(inputsFilebox.getText());
         Main.setOutputsFilename(outputsFilebox.getText());
         Main.setSaveReport(saveReportCheckbox.isSelected());
@@ -987,7 +1099,7 @@ public class Settings extends javax.swing.JFrame {
             Main.setOutputNamesType(Main.NUMBERS_NAMES);
         } else if(lettersNameTypeRadio.isSelected()){
             Main.setOutputNamesType(Main.LETTERS_NAMES);
-        } else if(userNameTypeRadio.isSelected()){
+        } else if(customTypeRadio.isSelected()){
             Main.setOutputNamesType(Main.USER_NAMES);
             Main.setUserNamesFilename(outputNamesFilebox.getText());
         }
@@ -998,6 +1110,10 @@ public class Settings extends javax.swing.JFrame {
 
         Main.startProgram();
     }//GEN-LAST:event_startButtonActionPerformed
+
+    private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitButtonActionPerformed
+        System.exit(2);
+    }//GEN-LAST:event_exitButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1038,6 +1154,7 @@ public class Settings extends javax.swing.JFrame {
     private javax.swing.JRadioButton accuracyRadio;
     private javax.swing.JToggleButton backButton;
     private javax.swing.ButtonGroup basisGroup;
+    private javax.swing.JRadioButton customTypeRadio;
     private javax.swing.JCheckBox dynamicRateCheckbox1;
     private javax.swing.JToggleButton exitButton;
     private javax.swing.JTextField hiddenNeuronsTextbox;
@@ -1096,6 +1213,5 @@ public class Settings extends javax.swing.JFrame {
     private javax.swing.JButton saveReportOpenButton;
     private javax.swing.JLabel settingsTitle;
     private javax.swing.JButton startButton;
-    private javax.swing.JRadioButton userNameTypeRadio;
     // End of variables declaration//GEN-END:variables
 }

@@ -1,5 +1,6 @@
 package Main;
 
+import GUI.src.Settings;
 import Giles.ANN.AdvancedNeuralNetwork;
 import Giles.util.CSVReader;
 import Giles.util.NewProcessor;
@@ -48,7 +49,24 @@ public class Main {
 
 
     public static void main(String[] args) {
-       //TODO: Open GUI
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Windows".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(Settings.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new Settings().setVisible(true);
+            }
+        });
     }
 
     public static void startProgram(){
@@ -146,6 +164,8 @@ public class Main {
         network.createPicture();
         //network.saveWB("C:\\Users\\super\\IdeaProjects\\NeuralNetwork4\\src\\WBTest.csv");
     }
+
+
 
 
     //Getters and Setters
