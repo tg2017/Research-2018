@@ -1063,15 +1063,37 @@ public class Settings extends javax.swing.JFrame {
     }//GEN-LAST:event_outputNamesChooseButtonActionPerformed
 
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
-        //TODO: Add code to reject invalid filenames
+        if(!new File(inputsFilebox.getText()).exists() || !new File(outputsFilebox.getText()).exists()) {
+            JOptionPane.showMessageDialog(null, "Please fill out all required fields", "Error", JOptionPane.ERROR_MESSAGE);
+            System.out.println("here");
+            return;
+        }
+        try {
+            new File(saveReportFilebox.getText()).createNewFile();
+            new File(saveNetworkFilebox.getText()).createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Please fill out all required fields", "Error", JOptionPane.ERROR_MESSAGE);
+            System.out.println("2");
+            return;
+        }
+        if((loadNetworkFilebox.isEnabled() && !new File(loadNetworkFilebox.getText()).exists())  ||  (outputNamesFilebox.isEnabled() && !new File(outputNamesFilebox.getText()).exists())){
+            JOptionPane.showMessageDialog(null, "Please fill out all required fields", "Error", JOptionPane.ERROR_MESSAGE);
+            System.out.println("last");
+            return;
+        }
+
         Main.setInputsFilename(inputsFilebox.getText());
         Main.setOutputsFilename(outputsFilebox.getText());
         Main.setSaveReport(saveReportCheckbox.isSelected());
-        Main.setReportFilename(saveReportFilebox.getText());
+        if(saveReportCheckbox.isSelected())
+            Main.setReportFilename(saveReportFilebox.getText());
         Main.setSaveState(saveNetworkCheckbox.isSelected());
-        Main.setSaveNetworkFilename(saveNetworkFilebox.getText());
+        if(saveNetworkCheckbox.isSelected())
+            Main.setSaveNetworkFilename(saveNetworkFilebox.getText());
         Main.setLoadState(loadNetworkCheckbox.isSelected());
-        Main.setLoadNetworkFilename(loadNetworkFilebox.getText());
+        if(loadNetworkCheckbox.isSelected())
+            Main.setLoadNetworkFilename(loadNetworkFilebox.getText());
         Main.setNumberOfHiddens(NewProcessor.convertToInteger(hiddenNeuronsTextbox.getText()));
         Main.setIterations(NewProcessor.convertToInteger(iterationsTextbox.getText()));
         Main.setPrintMonitor(printMonitorCheckbox.isSelected());
@@ -1104,11 +1126,9 @@ public class Settings extends javax.swing.JFrame {
             Main.setUserNamesFilename(outputNamesFilebox.getText());
         }
 
-
-
-
-
+        this.setVisible(false);
         Main.startProgram();
+        this.dispose();
     }//GEN-LAST:event_startButtonActionPerformed
 
     private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitButtonActionPerformed

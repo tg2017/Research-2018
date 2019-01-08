@@ -17,8 +17,8 @@ public class Main {
     private static List<String> outputNames = new ArrayList<>();//{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "AA", "AB", "AC", "AD", "AE", "AF", "AG", "AH", "AI", "AJ", "AK", "AL", "AM", "AN", "AO", "AP", "AQ", "AR", "AS", "AT", "AU", "AV", "AW", "AX", "AY", "AZ", "BA", "BB", "BC", "BD", "BE", "BF", "BG", "BH", "BI"};
     private static String[] alphabet = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
 
-    private static CSVReader inReader = new CSVReader("C:\\Users\\super\\Documents\\All Files\\School\\Research\\Research-2018\\CSVs\\Profiles1.csv");
-    private static CSVReader outReader = new CSVReader("C:\\Users\\super\\Documents\\All Files\\School\\Research\\Research-2018\\CSVs\\Expected-Outputs.txt");
+    private static CSVReader inReader;
+    private static CSVReader outReader;
 
     public static final int NUMBERS_NAMES = 0, LETTERS_NAMES = 1, USER_NAMES = 2;
     public static final int CONSTANT = AdvancedNeuralNetwork.CONSTANT;
@@ -46,6 +46,10 @@ public class Main {
     private static int outputNamesType = LETTERS_NAMES;
     private static int dynamicType = CONSTANT;
 
+    private static Settings settingsGUI = new Settings();
+    private static boolean allDoubles;
+
+    private static AdvancedNeuralNetwork network;
 
 
     public static void main(String[] args) {
@@ -71,6 +75,10 @@ public class Main {
 
     public static void startProgram(){
 
+
+        inReader = new CSVReader(inputsFilename);
+        outReader = new CSVReader(outputsFilename);
+
         examples = new ArrayList<>(NewProcessor.readAndStore(inReader));
         expectedsStrings = new ArrayList<>(NewProcessor.readAndStoreString(outReader));
 
@@ -85,31 +93,41 @@ public class Main {
             }
         }
 
-        //This chunk gives the output neurons alphabetical names, beginning with A
-        int alphabetCounter = -1;
-        //Names all output neurons in full sets of 26
-        for(int i = 0; i < examples.size() / alphabet.length; i++){
-            if(alphabetCounter == -1){
-                Collections.addAll(outputNames, alphabet);
-            } else {
-                for (String letter : alphabet) {
-                    outputNames.add(alphabet[alphabetCounter] + letter);
+        //Name the output neurons
+        if(outputNamesType == LETTERS_NAMES) {
+            //This chunk gives the output neurons alphabetical names, beginning with A
+            int alphabetCounter = -1;
+            //Names all output neurons in full sets of 26
+            for (int i = 0; i < examples.size() / alphabet.length; i++) {
+                if (alphabetCounter == -1) {
+                    Collections.addAll(outputNames, alphabet);
+                } else {
+                    for (String letter : alphabet) {
+                        outputNames.add(alphabet[alphabetCounter] + letter);
+                    }
+                }
+                alphabetCounter++;
+            }
+
+            //Names remaining output neurons
+            for (int k = 0; k < (examples.size() % alphabet.length); k++) {
+                if (alphabetCounter == -1) {
+                    outputNames.add(alphabet[k]);
+                } else {
+                    outputNames.add(alphabet[alphabetCounter] + alphabet[k]);
                 }
             }
-            alphabetCounter++;
-        }
-
-        //Names remaining output neurons
-        for(int k = 0; k < (examples.size() % alphabet.length); k++){
-            if(alphabetCounter == -1){
-                outputNames.add(alphabet[k]);
-            } else {
-                outputNames.add(alphabet[alphabetCounter] + alphabet[k]);
+        } else if(outputNamesType == NUMBERS_NAMES){
+            //This chunk gives the output neurons numerical names, beginning with 1
+            for(int i = 0; i < examples.size(); i++){
+                outputNames.add(i, ((Integer)(i+1)).toString());
             }
+        } else if(outputNamesType == USER_NAMES) {
+            outputNames = new ArrayList(NewProcessor.readAndStoreString(new CSVReader(userNamesFilename)));
         }
 
-        //Sets the "expecteds" values based on the output names, if the expected values provided are in the form of names
-        boolean allDoubles = true;
+
+
         for(List<String> expectedsStringList : expectedsStrings){
             for(String expectedString : expectedsStringList){
                 if(!NewProcessor.isDouble(expectedString)){
@@ -144,11 +162,17 @@ public class Main {
             JOptionPane.showMessageDialog(null, "The format of the expected output values provided is not valid.\nPlease provide expected outputLayerSize as names or as doubles.");
         }
 
-        System.out.println("Examples: " + examples);
-        System.out.println("Expected Outcomes: " + expecteds);
+        if(printMonitor) {
+            System.out.println("Examples: " + examples);
+            System.out.println("Expected Outcomes: " + expecteds);
+        }
 
-        AdvancedNeuralNetwork network = new AdvancedNeuralNetwork(examples.get(0).size(), 20, expecteds.get(0).size());
-        //AdvancedNeuralNetwork network = new AdvancedNeuralNetwork("C:\\Users\\super\\IdeaProjects\\NeuralNetwork4\\src\\WBTest.csv");
+        if(loadState){
+            network = new AdvancedNeuralNetwork(loadNetworkFilename);
+        } else {
+            network = new AdvancedNeuralNetwork(examples.get(0).size(), numberOfHiddens, expecteds.get(0).size());
+        }
+
         System.out.println();
         network.print();
 
@@ -156,13 +180,20 @@ public class Main {
             System.out.println("Outputs: " + network.forwardProp(example));
         }*/
 
-        network.setCSVFile("C:\\Users\\super\\Documents\\All Files\\School\\Research\\Research-2018\\CSVs\\Test.csv");
-        network.createSimplePicture();
-        network.createPicture();
-        network.train(examples, expecteds, .4, AdvancedNeuralNetwork.ACCURACY_LINEAR, 50000, true);
+        if(saveReport) {
+            network.setCSVFile(reportFilename);
+        }
+        if(createPicture) {
+            network.createPicture();
+        }
+        network.train(examples, expecteds, learningRate, dynamicType, iterations, printMonitor);
         System.out.println(network.test(examples, outputNames).toString());
-        network.createPicture();
-        //network.saveWB("C:\\Users\\super\\IdeaProjects\\NeuralNetwork4\\src\\WBTest.csv");
+        if(createPicture) {
+            network.createPicture();
+        }
+        if(saveState) {
+            network.saveWB(saveNetworkFilename);
+        }
     }
 
 
