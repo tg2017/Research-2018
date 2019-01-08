@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Taylor on 6/11/2017.
+ * Created by Taylor Giles on 6/11/2017.
  */
 public class DataProcessor {
 

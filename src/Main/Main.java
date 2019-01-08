@@ -12,13 +12,9 @@ import java.util.List;
 
 public class Main {
     private static List<List<Double>> examples;
-    private static List<List<String>> expectedsStrings;
     private static List<List<Double>> expecteds = new ArrayList<>();
     private static List<String> outputNames = new ArrayList<>();//{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "AA", "AB", "AC", "AD", "AE", "AF", "AG", "AH", "AI", "AJ", "AK", "AL", "AM", "AN", "AO", "AP", "AQ", "AR", "AS", "AT", "AU", "AV", "AW", "AX", "AY", "AZ", "BA", "BB", "BC", "BD", "BE", "BF", "BG", "BH", "BI"};
     private static String[] alphabet = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
-
-    private static CSVReader inReader;
-    private static CSVReader outReader;
 
     public static final int NUMBERS_NAMES = 0, LETTERS_NAMES = 1, USER_NAMES = 2;
     public static final int CONSTANT = AdvancedNeuralNetwork.CONSTANT;
@@ -53,6 +49,7 @@ public class Main {
 
 
     public static void main(String[] args) {
+        //Create GUI
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Windows".equals(info.getName())) {
@@ -74,13 +71,11 @@ public class Main {
     }
 
     public static void startProgram(){
-
-
-        inReader = new CSVReader(inputsFilename);
-        outReader = new CSVReader(outputsFilename);
+        CSVReader inReader = new CSVReader(inputsFilename);
+        CSVReader outReader = new CSVReader(outputsFilename);
 
         examples = new ArrayList<>(NewProcessor.readAndStore(inReader));
-        expectedsStrings = new ArrayList<>(NewProcessor.readAndStoreString(outReader));
+        List<List<String>> expectedsStrings = new ArrayList<>(NewProcessor.readAndStoreString(outReader));
 
         //Change all example values to activations
         for(List<Double> example : examples){
@@ -126,8 +121,6 @@ public class Main {
             outputNames = new ArrayList(NewProcessor.readAndStoreString(new CSVReader(userNamesFilename)));
         }
 
-
-
         for(List<String> expectedsStringList : expectedsStrings){
             for(String expectedString : expectedsStringList){
                 if(!NewProcessor.isDouble(expectedString)){
@@ -167,14 +160,17 @@ public class Main {
             System.out.println("Expected Outcomes: " + expecteds);
         }
 
+        //Create the network object
         if(loadState){
             network = new AdvancedNeuralNetwork(loadNetworkFilename);
         } else {
             network = new AdvancedNeuralNetwork(examples.get(0).size(), numberOfHiddens, expecteds.get(0).size());
         }
 
-        System.out.println();
-        network.print();
+        if(printMonitor) {
+            System.out.println();
+            network.print();
+        }
 
         /*for (List<Double> example : examples) {
             System.out.println("Outputs: " + network.forwardProp(example));
@@ -186,6 +182,11 @@ public class Main {
         if(createPicture) {
             network.createPicture();
         }
+
+        for(List<Double> example : examples){
+            network.printExampleSummary(example, expecteds.get(examples.indexOf(example)));
+        }
+
         network.train(examples, expecteds, learningRate, dynamicType, iterations, printMonitor);
         System.out.println(network.test(examples, outputNames).toString());
         if(createPicture) {
@@ -194,127 +195,76 @@ public class Main {
         if(saveState) {
             network.saveWB(saveNetworkFilename);
         }
+
+        for(List<Double> example : examples){
+            network.printExampleSummary(example, expecteds.get(examples.indexOf(example)));
+        }
     }
 
 
 
 
-    //Getters and Setters
+    //Setters
     public static void setLearningRate(double rate){
         learningRate = rate;
     }
-    public static double getLearningRate(){
-        return learningRate;
-    }
 
-    public static int getIterations() {
-        return iterations;
-    }
     public static void setIterations(int iterations) {
         Main.iterations = iterations;
     }
 
-    public static int getNumberOfHiddens() {
-        return numberOfHiddens;
-    }
     public static void setNumberOfHiddens(int numberOfHiddens) {
         Main.numberOfHiddens = numberOfHiddens;
     }
 
-    public static boolean isUseDynamic() {
-        return useDynamic;
-    }
-    public static void setUseDynamic(boolean useDynamic) {
-        Main.useDynamic = useDynamic;
-    }
-
-    public static boolean isPrintMonitor() {
-        return printMonitor;
-    }
     public static void setPrintMonitor(boolean printMonitor) {
         Main.printMonitor = printMonitor;
     }
 
-    public static boolean isCreatePicture() {
-        return createPicture;
-    }
     public static void setCreatePicture(boolean createPicture) {
         Main.createPicture = createPicture;
     }
 
-    public static boolean isSaveReport() {
-        return saveReport;
-    }
     public static void setSaveReport(boolean saveReport) {
         Main.saveReport = saveReport;
     }
 
-    public static boolean isSaveState() {
-        return saveState;
-    }
     public static void setSaveState(boolean saveState) {
         Main.saveState = saveState;
     }
 
-    public static boolean isLoadState() {
-        return loadState;
-    }
     public static void setLoadState(boolean loadState) {
         Main.loadState = loadState;
     }
 
-    public static String getInputsFilename() {
-        return inputsFilename;
-    }
     public static void setInputsFilename(String inputsFilename) {
         Main.inputsFilename = inputsFilename;
     }
 
-    public static String getOutputsFilename() {
-        return outputsFilename;
-    }
     public static void setOutputsFilename(String outputsFilename) {
         Main.outputsFilename = outputsFilename;
     }
 
-    public static String getReportFilename() {
-        return reportFilename;
-    }
     public static void setReportFilename(String reportFilename) {
         Main.reportFilename = reportFilename;
     }
 
-    public static String getUserNamesFilename() {
-        return userNamesFilename;
-    }
     public static void setUserNamesFilename(String userNamesFilename) {
         Main.userNamesFilename = userNamesFilename;
     }
 
-    public static String getSaveNetworkFilename() {
-        return saveNetworkFilename;
-    }
     public static void setSaveNetworkFilename(String saveNetworkFilename) {
         Main.saveNetworkFilename = saveNetworkFilename;
     }
 
-    public static String getLoadNetworkFilename() {
-        return loadNetworkFilename;
-    }
     public static void setLoadNetworkFilename(String loadNetworkFilename) {
         Main.loadNetworkFilename = loadNetworkFilename;
     }
 
-    public static int getOutputNamesType() {
-        return outputNamesType;
-    }
     public static void setOutputNamesType(int outputNamesType) {
         Main.outputNamesType = outputNamesType;
     }
 
-    public static int getDynamicType() {
-        return dynamicType;
-    }
     public static void setDynamicType(int dynamicType) {
         Main.dynamicType = dynamicType;
     }

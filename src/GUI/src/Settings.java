@@ -1069,8 +1069,12 @@ public class Settings extends javax.swing.JFrame {
             return;
         }
         try {
-            new File(saveReportFilebox.getText()).createNewFile();
-            new File(saveNetworkFilebox.getText()).createNewFile();
+            if(saveReportFilebox.getText().indexOf('.') == -1 || saveNetworkFilebox.getText().indexOf('.') == -1){
+                JOptionPane.showMessageDialog(null, "Please fill out all required fields", "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                new File(saveReportFilebox.getText()).createNewFile();
+                new File(saveNetworkFilebox.getText()).createNewFile();
+            }
         } catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, "Please fill out all required fields", "Error", JOptionPane.ERROR_MESSAGE);

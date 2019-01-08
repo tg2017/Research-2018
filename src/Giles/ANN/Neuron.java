@@ -4,15 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Neuron {
-    List<Double> weights;
-    double bias;
-    double activation;
-    double error;
+    private List<Double> weights;
+    private double bias;
+    private double activation;
+    private double error;
 
+    //Initializes as empty neuron
     public Neuron() {
         this.weights = new ArrayList<>();
     }
 
+    //Initializes neuron using specified values
     public Neuron(List<Double> weights, double bias) {
         this.weights = new ArrayList<>(weights);
         this.bias = bias;
@@ -52,18 +54,18 @@ public class Neuron {
     }
 
     public String toString() {
-        String output = "**Weights: {";
+        StringBuilder output = new StringBuilder("**Weights: {");
         for (int i = 0; i < weights.size(); i++) {
             if (i != 0) {
-                output += ", ";
+                output.append(", ");
             }
-            output += weights.get(i);
+            output.append(weights.get(i));
         }
-        output += "} | Bias: ";
-        output += bias;
-        output += "**";
+        output.append("} | Bias: ");
+        output.append(bias);
+        output.append("**");
 
-        return output;
+        return output.toString();
     }
 
     public void setActivation(double activation) {

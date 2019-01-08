@@ -87,7 +87,6 @@ public class NewProcessor extends DataProcessor {
     }
 
 
-
     public static final int DOUBLE = 0;
     public static final int INTEGER = 1;
     public static final int STRING = 2;

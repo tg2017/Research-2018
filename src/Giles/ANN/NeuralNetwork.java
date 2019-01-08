@@ -14,6 +14,7 @@ public class NeuralNetwork {
     List<List<Neuron>> network;
     public Integer inputLayerSize, hiddenLayerSize, outputLayerSize; //Number of neurons in each respective layer
 
+    //Initializes network with random weights and biases
     public NeuralNetwork(int numInputs, int numHiddens, int numOutputs) {
         network = new ArrayList<>();
         inputLayerSize = numInputs;
