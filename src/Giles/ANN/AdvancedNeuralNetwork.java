@@ -111,6 +111,10 @@ public class AdvancedNeuralNetwork extends NeuralNetwork {
         }
 
         if(csvReady)
+            currentSet = new ArrayList<>();
+            currentSet.add("Percent Correct:");
+            currentSet.add(percentCorrect);
+            csvWriter.addSet(currentSet);
             csvWriter.write();
     }
 

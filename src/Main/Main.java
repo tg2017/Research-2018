@@ -204,12 +204,6 @@ public class Main {
             network.createPicture();
         }
 
-        if (iterations > 0) {
-            for(List<Double> example : examples){
-                network.printExampleSummary(example, expecteds.get(examples.indexOf(example)), outputNames);
-            }
-        }
-
         //Train
         network.train(examples, expecteds, learningRate, dynamicType, iterations, printMonitor);
         System.out.println(network.test(examples, outputNames).toString());
@@ -220,7 +214,7 @@ public class Main {
             network.saveWB(saveNetworkFilename);
         }
 
-        //Forward prop
+        //Show final prediction results
         for(List<Double> example : examples){
             network.printExampleSummary(example, expecteds.get(examples.indexOf(example)), outputNames);
         }
