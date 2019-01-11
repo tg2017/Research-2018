@@ -212,12 +212,17 @@ public class AdvancedNeuralNetwork extends NeuralNetwork {
         return outputNames[super.getPrediction(inputs)];
     }
 
-    public void printExampleSummary(List<Double> example, List<Double> expecteds) {
-        System.out.println("\n\tOutputs: " + forwardProp(example) + " | " + getPrediction(example));
-        System.out.println("\tExpected: " + expecteds);
+    public void printExampleSummary(List<Double> example, List<Double> expecteds, List<String> outputNames) {
+        System.out.println("\n\tOutput: " + outputNames.get(getPrediction(example)) + " | " + forwardProp(example));
+        System.out.println("\tExpected: " + outputNames.get(expecteds.indexOf(1.0)) + " | " + expecteds);
         System.out.println("\tCorrect: " + (expecteds.get(getPrediction(example)) == 1));
-
     }
+
+//    public void printExampleSummary(List<Double> example, List<Double> expecteds, String[] outputNames) {
+//        System.out.println("\n\tOutput: " + getPrediction(example) + " | " + forwardProp(example));
+//        System.out.println("\tExpected: " + outputNames[expecteds.indexOf(1.0)] + " | " + expecteds);
+//        System.out.println("\tCorrect: " + (expecteds.get(getPrediction(example)) == 1));
+//    }
 
     //Returns the results of the network's predictions of the output names of the supplied inputs
     public List<String> test(List<List<Double>> inputs, String[] outputNames){

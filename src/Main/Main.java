@@ -6,16 +6,24 @@ import Giles.util.CSVReader;
 import Giles.util.NewProcessor;
 
 import javax.swing.*;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class Main {
+
+    /** Variable Declarations **/
     private static List<List<Double>> examples;
     private static List<List<Double>> expecteds = new ArrayList<>();
-    private static List<String> outputNames = new ArrayList<>();//{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "AA", "AB", "AC", "AD", "AE", "AF", "AG", "AH", "AI", "AJ", "AK", "AL", "AM", "AN", "AO", "AP", "AQ", "AR", "AS", "AT", "AU", "AV", "AW", "AX", "AY", "AZ", "BA", "BB", "BC", "BD", "BE", "BF", "BG", "BH", "BI"};
+    private static List<String> outputNames = new ArrayList<>();
     private static String[] alphabet = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
 
+    private static String savedFiles;
+
+    //Constants
     public static final int NUMBERS_NAMES = 0, LETTERS_NAMES = 1, USER_NAMES = 2;
     public static final int CONSTANT = AdvancedNeuralNetwork.CONSTANT;
     public static final int ITERATION_LINEAR = AdvancedNeuralNetwork.ITERATION_LINEAR;
@@ -23,11 +31,10 @@ public class Main {
     public static final int ACCURACY_LINEAR = AdvancedNeuralNetwork.ACCURACY_LINEAR;
     public static final int ACCURACY_QUADRATIC = AdvancedNeuralNetwork.ACCURACY_QUADRATIC;
 
-    //Variables that are changes in settings are initialized with defaults
+    //Variables that are changed in settings are initialized with defaults
     private static double learningRate = .4;
     private static int iterations = 150000;
     private static int numberOfHiddens = 24;
-    private static boolean useDynamic = false;
     private static boolean printMonitor = true;
     private static boolean createPicture = true;
     private static boolean saveReport = false;
@@ -42,14 +49,19 @@ public class Main {
     private static int outputNamesType = LETTERS_NAMES;
     private static int dynamicType = CONSTANT;
 
-    private static Settings settingsGUI = new Settings();
     private static boolean allDoubles;
 
     private static AdvancedNeuralNetwork network;
+    /**End of Variable Declarations**/
 
-
+    //Starts the GUI and saves the filenames
     public static void main(String[] args) {
-        //Create GUI
+        savedFiles = System.getProperty("user.dir") + "\\filenames.txt";
+        CSVReader filenamesReader = new CSVReader(savedFiles);
+        filenamesReader.setSplitString("new line");
+        String[] filenames = filenamesReader.getValues();
+
+        //<editor-fold defaultstate="collapsed" desc=" Appearance-setting code">
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Windows".equals(info.getName())) {
@@ -62,15 +74,24 @@ public class Main {
         }
         //</editor-fold>
 
-        /* Create and display the form */
+        /* Create and display the GUI */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Settings().setVisible(true);
+                Settings settingsGUI = new Settings();
+                if(!filenames[0].equals("empty") && !filenames[1].equals("empty")) {
+                    settingsGUI.setInputsFilename(filenames[0]);
+                    settingsGUI.setOutputsFilename(filenames[1]);
+                }
+                settingsGUI.setVisible(true);
             }
         });
     }
 
+    //Runs the neural network training process and, at the end, gets network predictions
     public static void startProgram(){
+        //Save the filenames for use in future runthroughs
+        changeFilenames(new String[]{inputsFilename, outputsFilename});
+
         CSVReader inReader = new CSVReader(inputsFilename);
         CSVReader outReader = new CSVReader(outputsFilename);
 
@@ -152,7 +173,7 @@ public class Main {
                 expecteds.add(new ArrayList<>(tempList));
             }
         } else {
-            JOptionPane.showMessageDialog(null, "The format of the expected output values provided is not valid.\nPlease provide expected outputLayerSize as names or as doubles.");
+            JOptionPane.showMessageDialog(null, "The format of the expected output values provided is not valid.\nPlease provide expected outputLayerSize as names or as doubles.", "Error", JOptionPane.ERROR_MESSAGE);
         }
 
         if(printMonitor) {
@@ -183,10 +204,13 @@ public class Main {
             network.createPicture();
         }
 
-        for(List<Double> example : examples){
-            network.printExampleSummary(example, expecteds.get(examples.indexOf(example)));
+        if (iterations > 0) {
+            for(List<Double> example : examples){
+                network.printExampleSummary(example, expecteds.get(examples.indexOf(example)), outputNames);
+            }
         }
 
+        //Train
         network.train(examples, expecteds, learningRate, dynamicType, iterations, printMonitor);
         System.out.println(network.test(examples, outputNames).toString());
         if(createPicture) {
@@ -196,75 +220,90 @@ public class Main {
             network.saveWB(saveNetworkFilename);
         }
 
+        //Forward prop
         for(List<Double> example : examples){
-            network.printExampleSummary(example, expecteds.get(examples.indexOf(example)));
+            network.printExampleSummary(example, expecteds.get(examples.indexOf(example)), outputNames);
         }
     }
 
+    //Writes to savedFiles file
+    public static void changeFilenames(String[] newFileNames){
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(savedFiles, false))) {
+
+            String newFilenames= "";//Will store new filenames as single String, with "\r\n"'s
+
+            //Copy values of newFileNames into one string, newFilenames, with "\r\n"'s
+            for(int i = 0; i < newFileNames.length; i++) {
+                if (i == 0) {
+                    newFilenames += newFileNames[i];
+                } else {
+                    newFilenames += "\r\n" + newFileNames[i];
+                }
+            }
+
+            //Write data to file
+            bw.write(newFilenames);
+
+            //Display confirmation message
+            System.out.println("\n\nSuccessfully changed filename");
+            //JOptionPane.showMessageDialog(null, "Successfully changed filename");
 
 
+        } catch (IOException e) {
+            //Print error message if exception is caught
+            e.printStackTrace();
+            System.out.println("Error changing filename in file: " + savedFiles);
+            JOptionPane.showMessageDialog(null, "Error changing data in file: " + savedFiles);
+        }
+
+    }
 
     //Setters
     public static void setLearningRate(double rate){
         learningRate = rate;
     }
-
     public static void setIterations(int iterations) {
         Main.iterations = iterations;
     }
-
     public static void setNumberOfHiddens(int numberOfHiddens) {
         Main.numberOfHiddens = numberOfHiddens;
     }
-
     public static void setPrintMonitor(boolean printMonitor) {
         Main.printMonitor = printMonitor;
     }
-
     public static void setCreatePicture(boolean createPicture) {
         Main.createPicture = createPicture;
     }
-
     public static void setSaveReport(boolean saveReport) {
         Main.saveReport = saveReport;
     }
-
     public static void setSaveState(boolean saveState) {
         Main.saveState = saveState;
     }
-
     public static void setLoadState(boolean loadState) {
         Main.loadState = loadState;
     }
-
     public static void setInputsFilename(String inputsFilename) {
         Main.inputsFilename = inputsFilename;
     }
-
     public static void setOutputsFilename(String outputsFilename) {
         Main.outputsFilename = outputsFilename;
     }
-
     public static void setReportFilename(String reportFilename) {
         Main.reportFilename = reportFilename;
     }
-
     public static void setUserNamesFilename(String userNamesFilename) {
         Main.userNamesFilename = userNamesFilename;
     }
-
     public static void setSaveNetworkFilename(String saveNetworkFilename) {
         Main.saveNetworkFilename = saveNetworkFilename;
     }
-
     public static void setLoadNetworkFilename(String loadNetworkFilename) {
         Main.loadNetworkFilename = loadNetworkFilename;
     }
-
     public static void setOutputNamesType(int outputNamesType) {
         Main.outputNamesType = outputNamesType;
     }
-
     public static void setDynamicType(int dynamicType) {
         Main.dynamicType = dynamicType;
     }

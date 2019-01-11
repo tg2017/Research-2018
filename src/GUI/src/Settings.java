@@ -1139,6 +1139,14 @@ public class Settings extends javax.swing.JFrame {
         System.exit(2);
     }//GEN-LAST:event_exitButtonActionPerformed
 
+    public void setInputsFilename(String filename){
+        inputsFilebox.setText(filename);
+    }
+
+    public void setOutputsFilename(String filename){
+        outputsFilebox.setText(filename);
+    }
+
     /**
      * @param args the command line arguments
      */
