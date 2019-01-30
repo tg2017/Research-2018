@@ -5,18 +5,21 @@ package GUI.src;/*
  */
 
 import javax.swing.*;
+import java.text.NumberFormat;
 
 /**
  *
  * @author super
  */
 public class ProgressBar extends javax.swing.JFrame {
-
+    private NumberFormat format = NumberFormat.getNumberInstance();
     /**
      * Creates new form ProgressBar
      */
     public ProgressBar() {
         initComponents();
+        format.setMaximumFractionDigits(3);
+        format.setMinimumFractionDigits(3);
     }
 
     /**
@@ -134,7 +137,7 @@ public class ProgressBar extends javax.swing.JFrame {
     }
 
     public void setText(int iteration, double percentCorrect, int numCorrect, double error, double lRate){
-        textArea.setText("Iteration: " + iteration + "\nNumber Correct: " + numCorrect + "\nPercent Correct: " + percentCorrect + "%\nError: " + error + "\nLearning Rate: " + lRate);
+        textArea.setText("Iteration: " + iteration + "\nNumber Correct: " + numCorrect + "\nPercent Correct: " + format.format(percentCorrect) + "%\nError: " + format.format(error) + "\nLearning Rate: " + format.format(lRate));
     }
     
     public void setValue(int value){

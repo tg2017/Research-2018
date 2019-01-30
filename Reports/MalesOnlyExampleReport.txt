@@ -1,0 +1,3 @@
+Iteration,Learning Rate,Total Error,Number Correct
+1,0.4,3.1235462631824094,9
+Percent Correct:,36.0

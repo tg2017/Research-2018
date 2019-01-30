@@ -216,7 +216,7 @@ public class Main {
         }
 
         //Train
-        network.train(examples, expecteds, learningRate, dynamicType, iterations, printMonitor);
+        network.train(examples, expecteds, learningRate, dynamicType, iterations, printMonitor, true);
         System.out.println(network.test(examples, outputNames).toString());
         if(createPicture) {
             network.createPicture();
