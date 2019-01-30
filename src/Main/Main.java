@@ -33,7 +33,7 @@ public class Main {
 
     //Variables that are changed in settings are initialized with defaults
     private static double learningRate = .4;
-    private static int iterations = 150000;
+    private static int iterations = 100000;
     private static int numberOfHiddens = 24;
     private static boolean printMonitor = true;
     private static boolean createPicture = true;
@@ -78,9 +78,18 @@ public class Main {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 Settings settingsGUI = new Settings();
-                if(!filenames[0].equals("empty") && !filenames[1].equals("empty")) {
+                if(!filenames[0].equals("null") && !filenames[1].equals("null")) {
                     settingsGUI.setInputsFilename(filenames[0]);
                     settingsGUI.setOutputsFilename(filenames[1]);
+                }
+                if(!filenames[2].equals("null")){
+                    settingsGUI.setReportFilename(filenames[2]);
+                }
+                if(!filenames[3].equals("null")) {
+                    settingsGUI.setSaveFilename(filenames[3]);
+                }
+                if(!filenames[4].equals("null")){
+                    settingsGUI.setLoadFilename(filenames[4]);
                 }
                 settingsGUI.setVisible(true);
             }
@@ -90,7 +99,7 @@ public class Main {
     //Runs the neural network training process and, at the end, gets network predictions
     public static void startProgram(){
         //Save the filenames for use in future runthroughs
-        changeFilenames(new String[]{inputsFilename, outputsFilename});
+        changeFilenames(new String[]{inputsFilename, outputsFilename, reportFilename, saveNetworkFilename, loadNetworkFilename});
 
         CSVReader inReader = new CSVReader(inputsFilename);
         CSVReader outReader = new CSVReader(outputsFilename);
@@ -139,8 +148,10 @@ public class Main {
                 outputNames.add(i, ((Integer)(i+1)).toString());
             }
         } else if(outputNamesType == USER_NAMES) {
-            outputNames = new ArrayList(NewProcessor.readAndStoreString(new CSVReader(userNamesFilename)));
+            outputNames = new ArrayList(NewProcessor.readAndStoreString(new CSVReader(userNamesFilename)).get(0));
         }
+
+
 
         for(List<String> expectedsStringList : expectedsStrings){
             for(String expectedString : expectedsStringList){

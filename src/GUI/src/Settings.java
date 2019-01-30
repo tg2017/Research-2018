@@ -1064,12 +1064,12 @@ public class Settings extends javax.swing.JFrame {
 
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
         if(!new File(inputsFilebox.getText()).exists() || !new File(outputsFilebox.getText()).exists()) {
-            JOptionPane.showMessageDialog(null, "Please fill out all required fields", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "File not recognized", "Error", JOptionPane.ERROR_MESSAGE);
             System.out.println("here");
             return;
         }
         try {
-            if(saveReportFilebox.getText().indexOf('.') == -1 || saveNetworkFilebox.getText().indexOf('.') == -1){
+            if(saveReportCheckbox.isSelected() && (saveReportFilebox.getText().indexOf('.') == -1 || saveNetworkFilebox.getText().indexOf('.') == -1)){
                 JOptionPane.showMessageDialog(null, "Please fill out all required fields", "Error", JOptionPane.ERROR_MESSAGE);
             } else {
                 new File(saveReportFilebox.getText()).createNewFile();
@@ -1142,9 +1142,17 @@ public class Settings extends javax.swing.JFrame {
     public void setInputsFilename(String filename){
         inputsFilebox.setText(filename);
     }
-
     public void setOutputsFilename(String filename){
         outputsFilebox.setText(filename);
+    }
+    public void setReportFilename(String filename){
+        saveReportFilebox.setText(filename);
+    }
+    public void setSaveFilename(String filename){
+        saveNetworkFilebox.setText(filename);
+    }
+    public void setLoadFilename(String filename){
+        loadNetworkFilebox.setText(filename);
     }
 
     /**

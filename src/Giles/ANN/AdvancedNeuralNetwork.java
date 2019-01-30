@@ -1,5 +1,6 @@
 package Giles.ANN;
 
+import GUI.src.ProgressBar;
 import Giles.util.CSVReader;
 import Giles.util.CSVWriter;
 import Giles.util.NewProcessor;
@@ -23,6 +24,7 @@ public class AdvancedNeuralNetwork extends NeuralNetwork {
     public static final int ACCURACY_LINEAR = 3;
     public static final int ACCURACY_QUADRATIC = 4;
 
+
     public AdvancedNeuralNetwork(int numInputs, int numHiddens, int numOutputs) {
         super(numInputs, numHiddens, numOutputs);
         format.setMaximumFractionDigits(9);
@@ -37,16 +39,36 @@ public class AdvancedNeuralNetwork extends NeuralNetwork {
 
     //Trains the network by running backprop using the given examples, <numberOfIterations> number of times, and changes the learning rate using the specified algorithm
     public void train(List<List<Double>> examples, List<List<Double>> expectedOutcomes, double learningRate, int dynamicLearningRate, int numberOfIterations, boolean printMonitor){
+
         double totalError;
-        int numberCorrect;
+        int numberCorrect = 0;
+        double percentCorrect = 0;
+
+        ProgressBar progressBar = new ProgressBar();
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                progressBar.setVisible(true);
+            }
+        });
+        progressBar.setMaximum(numberOfIterations);
+        progressBar.setMinimum(0);
+        progressBar.setValue(0);
+        progressBar.setStringPainted(true);
+        progressBar.setVisible(true);
 
         //For writing data to CSV File
-        List<String> currentSet;
+        List<String> currentSet = new ArrayList<>();
 
         List<Double> currentOutputs;
         List<Double> currentExpecteds;
+
         double dynamicRate = learningRate;
         for(int iteration = 0; iteration < numberOfIterations; iteration++){ //Repeat for each iteration
+
+            //Update progress bar
+            progressBar.setValue(iteration);
+
             totalError = 0;
             numberCorrect = 0;
             for(List<Double> currentExample : examples){ //Cycle through training examples
@@ -69,10 +91,13 @@ public class AdvancedNeuralNetwork extends NeuralNetwork {
                 learn(dynamicRate, currentExample);
             }
 
-
+            percentCorrect = ((double)numberCorrect / (double)(examples.size())) * 100.0;
 
             if(printMonitor)
-                System.out.println("Iteration: " + (iteration+1) + "\t\tLearning Rate: " + format.format(dynamicRate) + "\t\tTotal Error: " + format.format(totalError) + "\t\tNumber Correct: " + numberCorrect);
+                System.out.println("Iteration: " + (iteration+1) + "\t\tLearning Rate: " + format.format(dynamicRate) + "\t\tTotal Error: " + format.format(totalError) + "\t\tNumber Correct: " + numberCorrect + "\t\tPercent Correct: " + format.format(percentCorrect) + "%");
+
+            //Update progress bar text
+            progressBar.setText(iteration, percentCorrect, numberCorrect, totalError, learningRate);
 
             //For printing data to CSV
             if(csvReady) {
@@ -82,6 +107,7 @@ public class AdvancedNeuralNetwork extends NeuralNetwork {
                     currentSet.add("Learning Rate");
                     currentSet.add("Total Error");
                     currentSet.add("Number Correct");
+                    currentSet.add("Percent Correct");
                     csvWriter.addSet(currentSet);
                 }
 
@@ -90,6 +116,7 @@ public class AdvancedNeuralNetwork extends NeuralNetwork {
                 currentSet.add(((Double) (dynamicRate)).toString());
                 currentSet.add(((Double) (totalError)).toString());
                 currentSet.add(((Integer) (numberCorrect)).toString());
+                currentSet.add(((Double)(percentCorrect)).toString() + "%");
                 csvWriter.addSet(currentSet);
             }
 
@@ -111,10 +138,10 @@ public class AdvancedNeuralNetwork extends NeuralNetwork {
         }
 
         if(csvReady)
-            currentSet = new ArrayList<>();
-            currentSet.add("Percent Correct:");
-            currentSet.add(percentCorrect);
-            csvWriter.addSet(currentSet);
+//            currentSet = new ArrayList<>();
+//            currentSet.add("Percent Correct:");
+//            currentSet.add(((Double)percentCorrect).toString());
+//            csvWriter.addSet(currentSet);
             csvWriter.write();
     }
 
@@ -179,8 +206,6 @@ public class AdvancedNeuralNetwork extends NeuralNetwork {
                 biasCounter++;
             }
         }
-
-
     }
 
     //Initializes the network with random weights and biases
