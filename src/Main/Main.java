@@ -225,22 +225,27 @@ public class Main {
         }
     }
 
-    public static void finish(){
-        System.out.println(network.test(examples, outputNames).toString());
-        if(createPicture) {
-            network.createPicture();
-        }
-        if(saveState) {
-            network.saveWB(saveNetworkFilename);
-            AdvancedNeuralNetwork newNetwork = new AdvancedNeuralNetwork(saveNetworkFilename);
-            newNetwork.createPicture();
-        }
 
-        //Show final prediction results
-        for(List<Double> example : examples){
-            network.printExampleSummary(example, expecteds.get(examples.indexOf(example)), outputNames);
-        }
+    //TODO Remember to get rid of these comments (switch the method back)
+    public static void finish(){
+        ChangingSampleSizeMain.finish();
     }
+//    public static void finish(){
+//        System.out.println(network.test(examples, outputNames).toString());
+//        if(createPicture) {
+//            network.createPicture();
+//        }
+//        if(saveState) {
+//            network.saveWB(saveNetworkFilename);
+//            AdvancedNeuralNetwork newNetwork = new AdvancedNeuralNetwork(saveNetworkFilename);
+//            newNetwork.createPicture();
+//        }
+//
+//        //Show final prediction results
+//        for(List<Double> example : examples){
+//            network.printExampleSummary(example, expecteds.get(examples.indexOf(example)), outputNames);
+//        }
+//    }
 
     //Writes to savedFiles file
     private static void changeFilenames(String[] newFileNames){
