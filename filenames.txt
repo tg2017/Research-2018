@@ -1,5 +1,5 @@
-C:/Users/super/Documents/All Files/School/Research/Research-2018/CSVs/Profiles1.csv
-C:/Users/super/Documents/All Files/School/Research/Research-2018/CSVs/Expected-Outputs.txt
+C:/Users/super/Documents/All Files/School/Research/Research-2018/CSVs/25Samples.csv
+C:/Users/super/Documents/All Files/School/Research/Research-2018/CSVs/25ProfilesExpected.csv
+C:/Users/super/Documents/All Files/School/Research/Research-2018/Reports/25SamplesReport.csv
 null
-C:/Users/super/Documents/All Files/School/Research/Research-2018/Network Saves/5Hiddens.csv
-null
+C:/Users/super/Documents/All Files/School/Research/Research-2018/Network Saves/25ProfilesSave.csv
