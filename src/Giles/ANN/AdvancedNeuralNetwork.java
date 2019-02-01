@@ -4,12 +4,14 @@ import GUI.src.ProgressBar;
 import Giles.util.CSVReader;
 import Giles.util.CSVWriter;
 import Giles.util.NewProcessor;
+import Main.*;
 
 import javax.swing.*;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 
 public class AdvancedNeuralNetwork extends NeuralNetwork {
 
@@ -38,7 +40,7 @@ public class AdvancedNeuralNetwork extends NeuralNetwork {
     }
 
     //Trains the network by running backprop using the given examples, <numberOfIterations> number of times, and changes the learning rate using the specified algorithm
-    public void train(List<List<Double>> examples, List<List<Double>> expectedOutcomes, double learningRate, int dynamicLearningRate, int numberOfIterations, boolean printMonitor){
+    private void train(List<List<Double>> examples, List<List<Double>> expectedOutcomes, double learningRate, int dynamicLearningRate, int numberOfIterations, boolean printMonitor){
 
         double totalError;
         int numberCorrect = 0;
@@ -148,131 +150,140 @@ public class AdvancedNeuralNetwork extends NeuralNetwork {
     //Trains the network by running backprop using the given examples, <numberOfIterations> number of times, and changes the learning rate using the specified algorithm, using a progress bar
     public void train(List<List<Double>> examples, List<List<Double>> expectedOutcomes, double learningRate, int dynamicLearningRate, int numberOfIterations, boolean printMonitor, boolean useProgressBar){
 
-        ProgressBar progressBar = new ProgressBar();
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                progressBar.setVisible(true);
-            }
-        });
-        progressBar.setMaximum(numberOfIterations);
-        progressBar.setMinimum(0);
-        progressBar.setValue(0);
-        progressBar.setStringPainted(true);
-        progressBar.setVisible(true);
+        if(!useProgressBar){
+            train(examples, expectedOutcomes, learningRate, dynamicLearningRate, numberOfIterations, printMonitor);
+            Main.finish();
+        } else {
+            ProgressBar progressBar = new ProgressBar();
+            /* Create and display the form */
+            java.awt.EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    progressBar.setVisible(true);
+                }
+            });
+            progressBar.setMaximum(numberOfIterations);
+            progressBar.setMinimum(0);
+            progressBar.setValue(0);
+            progressBar.setStringPainted(true);
+            progressBar.setVisible(true);
 
-        //In order for the progress bar to work, everything has to be in a SwingWorker class
-        class Process extends SwingWorker<Void, Void>{
-            private double totalError;
-            private int numberCorrect = 0;
-            private double percentCorrect = 0;
+            //In order for the progress bar to work, everything has to be in a SwingWorker class
+            class Process extends SwingWorker<Void, Void> {
+                private double totalError;
+                private int numberCorrect = 0;
+                private double percentCorrect = 0;
 
-            //For writing data to CSV File
-            private List<String> currentSet = new ArrayList<>();
+                //For writing data to CSV File
+                private List<String> currentSet = new ArrayList<>();
 
-            private List<Double> currentOutputs;
-            private List<Double> currentExpecteds;
+                private List<Double> currentOutputs;
+                private List<Double> currentExpecteds;
 
-            private double dynamicRate = learningRate;
+                private double dynamicRate = learningRate;
 
-            @Override
-            public Void doInBackground() {
-                for(int iteration = 0; iteration < numberOfIterations; iteration++){ //Repeat for each iteration
+                @Override
+                public Void doInBackground() {
+                    for (int iteration = 0; iteration < numberOfIterations; iteration++) { //Repeat for each iteration
 
-                    //Update progress bar
-                    progressBar.setValue(iteration);
+                        //Update progress bar
+                        progressBar.setValue(iteration);
 
-                    totalError = 0;
-                    numberCorrect = 0;
-                    for(List<Double> currentExample : examples){ //Cycle through training examples
-                        currentOutputs = new ArrayList<>(forwardProp(currentExample)); //Get outputLayerSize based on inputLayerSize of current example
-                        currentExpecteds = new ArrayList<>(expectedOutcomes.get(examples.indexOf(currentExample)));
+                        totalError = 0;
+                        numberCorrect = 0;
+                        for (List<Double> currentExample : examples) { //Cycle through training examples
+                            currentOutputs = new ArrayList<>(forwardProp(currentExample)); //Get outputLayerSize based on inputLayerSize of current example
+                            currentExpecteds = new ArrayList<>(expectedOutcomes.get(examples.indexOf(currentExample)));
 
-                        //printExampleSummary(currentExample, currentExpecteds);
+                            //printExampleSummary(currentExample, currentExpecteds);
 
-                        if(currentExpecteds.get(getPrediction(currentExample)) == 1){
-                            numberCorrect++;
+                            if (currentExpecteds.get(getPrediction(currentExample)) == 1) {
+                                numberCorrect++;
+                            }
+                            //System.out.println(currentExpecteds);
+
+                            //Calculate error (to see if improving over time)
+                            for (int i = 0; i < currentExpecteds.size(); i++) {
+                                totalError += (Math.pow((currentExpecteds.get(i) - currentOutputs.get(i)), 2));
+                                //System.out.println(Math.pow((currentExpecteds.get(i) - currentOutputs.get(i)), 2));
+                            }
+                            backProp(currentExpecteds);
+                            learn(dynamicRate, currentExample);
                         }
-                        //System.out.println(currentExpecteds);
 
-                        //Calculate error (to see if improving over time)
-                        for(int i = 0; i < currentExpecteds.size(); i++){
-                            totalError += (Math.pow((currentExpecteds.get(i) - currentOutputs.get(i)), 2));
-                            //System.out.println(Math.pow((currentExpecteds.get(i) - currentOutputs.get(i)), 2));
-                        }
-                        backProp(currentExpecteds);
-                        learn(dynamicRate, currentExample);
-                    }
+                        percentCorrect = ((double) numberCorrect / (double) (examples.size())) * 100.0;
 
-                    percentCorrect = ((double)numberCorrect / (double)(examples.size())) * 100.0;
+                        if (printMonitor)
+                            System.out.println("Iteration: " + (iteration + 1) + "\t\tLearning Rate: " + format.format(dynamicRate) + "\t\tTotal Error: " + format.format(totalError) + "\t\tNumber Correct: " + numberCorrect + "\t\tPercent Correct: " + format.format(percentCorrect) + "%");
 
-                    if(printMonitor)
-                        System.out.println("Iteration: " + (iteration+1) + "\t\tLearning Rate: " + format.format(dynamicRate) + "\t\tTotal Error: " + format.format(totalError) + "\t\tNumber Correct: " + numberCorrect + "\t\tPercent Correct: " + format.format(percentCorrect) + "%");
+                        //Update progress bar text
+                        progressBar.setText(iteration + 1, percentCorrect, numberCorrect, totalError, dynamicRate);
 
-                    //Update progress bar text
-                    progressBar.setText(iteration, percentCorrect, numberCorrect, totalError, dynamicRate);
+                        //For printing data to CSV
+                        if (csvReady) {
+                            if (iteration == 0) {
+                                currentSet = new ArrayList<>();
+                                currentSet.add("Iteration");
+                                currentSet.add("Learning Rate");
+                                currentSet.add("Total Error");
+                                currentSet.add("Number Correct");
+                                currentSet.add("Percent Correct");
+                                csvWriter.addSet(currentSet);
+                            }
 
-                    //For printing data to CSV
-                    if(csvReady) {
-                        if (iteration == 0) {
                             currentSet = new ArrayList<>();
-                            currentSet.add("Iteration");
-                            currentSet.add("Learning Rate");
-                            currentSet.add("Total Error");
-                            currentSet.add("Number Correct");
-                            currentSet.add("Percent Correct");
+                            currentSet.add(((Integer) (iteration + 1)).toString());
+                            currentSet.add(((Double) (dynamicRate)).toString());
+                            currentSet.add(((Double) (totalError)).toString());
+                            currentSet.add(((Integer) (numberCorrect)).toString());
+                            currentSet.add(((Double) (percentCorrect)).toString() + "%");
                             csvWriter.addSet(currentSet);
                         }
 
-                        currentSet = new ArrayList<>();
-                        currentSet.add(((Integer) (iteration + 1)).toString());
-                        currentSet.add(((Double) (dynamicRate)).toString());
-                        currentSet.add(((Double) (totalError)).toString());
-                        currentSet.add(((Integer) (numberCorrect)).toString());
-                        currentSet.add(((Double)(percentCorrect)).toString() + "%");
-                        csvWriter.addSet(currentSet);
+                        //Change learning rate
+                        switch (dynamicLearningRate) {
+                            case CONSTANT:
+                                dynamicRate = learningRate;
+                                break;
+                            case ITERATION_LINEAR:
+                                dynamicRate = ((learningRate * -1) / numberOfIterations) * iteration + learningRate;
+                                break;
+                            case ITERATION_QUADRATIC:
+                                dynamicRate = ((learningRate * -1) / Math.pow(numberOfIterations, 2)) * (Math.pow(iteration, 2) - Math.pow(numberOfIterations, 2));
+                                break;
+                            case ACCURACY_LINEAR:
+                                dynamicRate = ((learningRate * -1) / expectedOutcomes.size()) * numberCorrect + learningRate;
+                                break;
+                            case ACCURACY_QUADRATIC:
+                                dynamicRate = ((learningRate * -1) / Math.pow(expectedOutcomes.size(), 2)) * (Math.pow(numberCorrect, 2) - Math.pow(expectedOutcomes.size(), 2));
+                                break;
+                            default:
+                                dynamicRate = learningRate;
+                                break;
+                        }
                     }
-
-                    //Change learning rate
-                    switch(dynamicLearningRate){
-                        case CONSTANT:
-                            dynamicRate = learningRate; break;
-                        case ITERATION_LINEAR:
-                            dynamicRate = ((learningRate * -1)/numberOfIterations) * iteration + learningRate; break;
-                        case ITERATION_QUADRATIC:
-                            dynamicRate = ((learningRate * -1) / Math.pow(numberOfIterations, 2)) * (Math.pow(iteration, 2) - Math.pow(numberOfIterations, 2)); break;
-                        case ACCURACY_LINEAR:
-                            dynamicRate = ((learningRate * -1)/expectedOutcomes.size()) * numberCorrect + learningRate; break;
-                        case ACCURACY_QUADRATIC:
-                            dynamicRate = ((learningRate * -1) / Math.pow(expectedOutcomes.size(), 2)) * (Math.pow(numberCorrect, 2) - Math.pow(expectedOutcomes.size(), 2)); break;
-                        default:
-                            dynamicRate = learningRate; break;
-                    }
+                    return null;
                 }
-                return null;
+
+                @Override
+                public void done() {
+                    if (csvReady)
+                        csvWriter.write();
+
+                    progressBar.dispose();
+                    Main.finish();
+                }
+
             }
 
-            @Override
-            public void done(){
-                if(csvReady)
-//            currentSet = new ArrayList<>();
-//            currentSet.add("Percent Correct:");
-//            currentSet.add(((Double)percentCorrect).toString());
-//            csvWriter.addSet(currentSet);
-                    csvWriter.write();
-            }
-
+            //Runs the process
+            Process training = new Process();
+            training.execute();
         }
-
-        //Runs the process
-        Process training = new Process();
-        training.execute();
     }
-
-
 
     public void train(List<List<Double>> examples, List<List<Double>> expectedOutcomes, double learningRate, int numberOfIterations){
         train(examples, expectedOutcomes, learningRate, CONSTANT, numberOfIterations, true);
+        Main.finish();
     }
 
     public void setCSVFile(String csvFilename){
@@ -394,6 +405,7 @@ public class AdvancedNeuralNetwork extends NeuralNetwork {
         }
         return test(inputs, temp);
     }
+
 
     //Create a representative image of the network
     public void createPicture(){

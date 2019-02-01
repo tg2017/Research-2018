@@ -215,14 +215,25 @@ public class Main {
             network.createPicture();
         }
 
-        //Train
-        network.train(examples, expecteds, learningRate, dynamicType, iterations, printMonitor, true);
+        if(iterations == 1) {
+            System.out.println(network.test(examples, outputNames).toString());
+
+        } else {
+            //Train
+            network.train(examples, expecteds, learningRate, dynamicType, iterations, false, printMonitor);
+            //Program finishes when network's training method calls the finish() method
+        }
+    }
+
+    public static void finish(){
         System.out.println(network.test(examples, outputNames).toString());
         if(createPicture) {
             network.createPicture();
         }
         if(saveState) {
             network.saveWB(saveNetworkFilename);
+            AdvancedNeuralNetwork newNetwork = new AdvancedNeuralNetwork(saveNetworkFilename);
+            newNetwork.createPicture();
         }
 
         //Show final prediction results
@@ -232,22 +243,22 @@ public class Main {
     }
 
     //Writes to savedFiles file
-    public static void changeFilenames(String[] newFileNames){
+    private static void changeFilenames(String[] newFileNames){
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(savedFiles, false))) {
 
-            String newFilenames= "";//Will store new filenames as single String, with "\r\n"'s
+            StringBuilder newFilenames= new StringBuilder();//Will store new filenames as single String, with "\r\n"'s
 
             //Copy values of newFileNames into one string, newFilenames, with "\r\n"'s
             for(int i = 0; i < newFileNames.length; i++) {
                 if (i == 0) {
-                    newFilenames += newFileNames[i];
+                    newFilenames.append(newFileNames[i]);
                 } else {
-                    newFilenames += "\r\n" + newFileNames[i];
+                    newFilenames.append("\r\n").append(newFileNames[i]);
                 }
             }
 
             //Write data to file
-            bw.write(newFilenames);
+            bw.write(newFilenames.toString());
 
             //Display confirmation message
             System.out.println("\n\nSuccessfully changed filename");
